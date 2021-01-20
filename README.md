@@ -25,6 +25,9 @@ const task = new Task('simple task', () => { counter++ })
 const job = new SimpleIntervalJob({ seconds: 20, }, task)
 
 scheduler.addSimpleIntervalJob(job)
+
+// when stopping your app
+scheduler.stop()
 ```
 
 ## Usage with async tasks
@@ -44,6 +47,9 @@ const task = new AsyncTask(
 const job = new SimpleIntervalJob({ seconds: 20, }, task)
 
 scheduler.addSimpleIntervalJob(job)
+
+// when stopping your app
+scheduler.stop()
 ```
 
 Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition.
