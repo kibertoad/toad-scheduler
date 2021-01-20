@@ -69,6 +69,29 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    it('correctly handles adding job twice', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new SimpleIntervalJob(
+        {
+          milliseconds: 10,
+        },
+        task
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+      scheduler.addSimpleIntervalJob(job)
+
+      expect(counter).toBe(0)
+      jest.advanceTimersByTime(20)
+      expect(counter).toBe(2)
+
+      scheduler.stop()
+    })
+
     it('correctly stops jobs', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
