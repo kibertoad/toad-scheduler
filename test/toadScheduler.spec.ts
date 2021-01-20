@@ -304,6 +304,13 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    it('correctly stops even when some engines are not initialized', () => {
+      const scheduler = new ToadScheduler()
+
+      scheduler['engines'].simpleIntervalEngine = undefined
+      scheduler.stop()
+    })
+
     it('correctly handles multiple jobs', () => {
       let counter = 0
       let counter2 = 0
