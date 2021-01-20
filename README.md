@@ -1,7 +1,7 @@
 # toad-scheduler
 
 [![Build Status](https://github.com/kibertoad/toad-scheduler/workflows/ci/badge.svg)](https://github.com/kibertoad/toad-scheduler/actions)
-[![Coverage Status](https://coveralls.io/repos/kibertoad/toad-scheduler/badge.svg?branch=master)](https://coveralls.io/r/kibertoad/toad-scheduler?branch=master)
+[![Coverage Status](https://coveralls.io/repos/kibertoad/toad-scheduler/badge.svg?branch=main)](https://coveralls.io/r/kibertoad/toad-scheduler?branch=main)
 
 In-memory Node.js job scheduler
 
