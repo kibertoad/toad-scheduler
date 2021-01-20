@@ -18,6 +18,11 @@ export class SimpleIntervalJob extends Job {
   start(): void {
     const time = toMsecs(this.schedule)
 
+    // Avoid starting duplicates and leaking previous timers
+    if (this.timer) {
+      this.stop()
+    }
+
     this.timer = setInterval(() => {
       this.task.execute()
     }, time)
