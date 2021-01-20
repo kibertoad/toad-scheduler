@@ -258,7 +258,7 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(5).then(() => {
+      sleep(10).then(() => {
         expect(error).toBe('kaboom')
         scheduler.stop()
         done()
@@ -290,7 +290,7 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(5).then(() => {
+      sleep(10).then(() => {
         expect(error).toBe('kaboom2')
         scheduler.stop()
         done()
