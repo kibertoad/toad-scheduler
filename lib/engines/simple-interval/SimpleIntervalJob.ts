@@ -9,8 +9,8 @@ export class SimpleIntervalJob extends Job {
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
 
-  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask) {
-    super()
+  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, id?: string) {
+    super(id)
     this.schedule = schedule
     this.task = task
   }
