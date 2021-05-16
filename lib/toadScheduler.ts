@@ -36,11 +36,19 @@ export class ToadScheduler {
     }
   }
 
-  stopByID(id: string): void {
+  stopById(id: string): void {
     const job = this.jobRegistry[id]
     if (!job) {
       throw new Error(`Job with an id ${id} is not registered.`)
     }
     job.stop()
+  }
+
+  startById(id: string): void {
+    const job = this.jobRegistry[id]
+    if (!job) {
+      throw new Error(`Job with an id ${id} is not registered.`)
+    }
+    job.start()
   }
 }
