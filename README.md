@@ -64,7 +64,8 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 
 * `addSimpleIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job;
 * `stop(): void` - stops all jobs, registered in the scheduler;
-* `stopByID(id: string): void` - stops the job with a given id.
+* `stopById(id: string): void` - stops the job with a given id.
+* `startById(id: string): void` - starts, or restarts (if it's already running) the job with a given id.
 
 [npm-image]: https://img.shields.io/npm/v/toad-scheduler.svg
 [npm-url]: https://npmjs.org/package/toad-scheduler
