@@ -1,6 +1,7 @@
 # toad-scheduler
 
 [![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
 [![Build Status](https://github.com/kibertoad/toad-scheduler/workflows/ci/badge.svg)](https://github.com/kibertoad/toad-scheduler/actions)
 [![Coverage Status](https://coveralls.io/repos/kibertoad/toad-scheduler/badge.svg?branch=main)](https://coveralls.io/r/kibertoad/toad-scheduler?branch=main)
 
@@ -52,7 +53,19 @@ scheduler.addSimpleIntervalJob(job)
 scheduler.stop()
 ```
 
-Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition.
+Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition. See [talk on common Promise mistakes](https://www.youtube.com/watch?v=XV-u_Ow47s0) for more details.
+
+## API for jobs
+
+* `start(): void` - starts, or restarts (if it's already running) the job;
+* `stop(): void` - stops the job. Can be restarted again with `start` command.
+
+## API for scheduler
+
+* `addSimpleIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job;
+* `stop(): void` - stops all jobs, registered in the scheduler.
 
 [npm-image]: https://img.shields.io/npm/v/toad-scheduler.svg
 [npm-url]: https://npmjs.org/package/toad-scheduler
+[downloads-image]: https://img.shields.io/npm/dm/toad-scheduler.svg
+[downloads-url]: https://npmjs.org/package/toad-scheduler
