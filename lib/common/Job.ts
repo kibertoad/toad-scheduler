@@ -1,3 +1,8 @@
+export enum JobStatus {
+  RUNNING = 'running',
+  STOPPED = 'stopped',
+}
+
 export abstract class Job {
   public readonly id: string | undefined
 
@@ -5,6 +10,7 @@ export abstract class Job {
     this.id = id
   }
 
+  abstract getStatus(): JobStatus
   abstract start(): void
   abstract stop(): void
 }

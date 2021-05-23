@@ -1,12 +1,7 @@
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
-
-class NoopTask extends Task {
-  constructor() {
-    super('dummy', () => {})
-  }
-}
+import { NoopTask } from './utils/testTasks'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -15,6 +10,24 @@ describe('ToadScheduler', () => {
 
   afterEach(() => {
     jest.useRealTimers()
+  })
+
+  describe('getById', () => {
+    it('returns job correctly', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        'id'
+      )
+      scheduler.addSimpleIntervalJob(job)
+      const retrievedJob = scheduler.getById('id')
+      expect(retrievedJob.getStatus()).toBe('running')
+      expect(retrievedJob).toBe(job)
+    })
   })
 
   describe('stopById', () => {

@@ -1,6 +1,7 @@
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
+import { NoopTask } from './utils/testTasks'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -12,6 +13,33 @@ describe('ToadScheduler', () => {
   })
 
   describe('SimpleIntervalJob', () => {
+    it('correctly returns status for started job', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task
+      )
+      scheduler.addSimpleIntervalJob(job)
+      expect(job.getStatus()).toBe('running')
+    })
+
+    it('correctly returns status for stopped job', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task
+      )
+      scheduler.addSimpleIntervalJob(job)
+      scheduler.stop()
+      expect(job.getStatus()).toBe('stopped')
+    })
+
     it('correctly processes SimpleIntervalJob', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
