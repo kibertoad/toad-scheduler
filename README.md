@@ -33,7 +33,7 @@ scheduler.stop()
 
 ## Usage with async tasks
 
-In order to avoid unhandled rejections, make sure to use AsyncTask if you task is asynchronous:
+In order to avoid unhandled rejections, make sure to use AsyncTask if your task is asynchronous:
 
 ```js
 const { ToadScheduler, SimpleIntervalJob, AsyncTask } = require('toad-scheduler')
@@ -59,11 +59,13 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 
 * `start(): void` - starts, or restarts (if it's already running) the job;
 * `stop(): void` - stops the job. Can be restarted again with `start` command.
+* `getStatus(): JobStatus` - returns the status of the job, which is one of: `running`, `stopped`.
 
 ## API for scheduler
 
 * `addSimpleIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job;
 * `stop(): void` - stops all jobs, registered in the scheduler;
+* `getById(id: string): Job` - returns the job with a given id.
 * `stopById(id: string): void` - stops the job with a given id.
 * `startById(id: string): void` - starts, or restarts (if it's already running) the job with a given id.
 
