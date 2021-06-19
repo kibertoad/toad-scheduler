@@ -55,10 +55,19 @@ scheduler.stop()
 
 Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition. See [talk on common Promise mistakes](https://www.youtube.com/watch?v=XV-u_Ow47s0) for more details.
 
+## API for schedule
+
+* `days?: number` - how many days to wait before executing the job for the next time;
+* `hours?: number` - how many hours to wait before executing the job for the next time;
+* `minutes?: number` - how many minutes to wait before executing the job for the next time;
+* `seconds?: number` - how many seconds to wait before executing the job for the next time;
+* `milliseconds?: number` - how many milliseconds to wait before executing the job for the next time;
+* `runImmediately?: boolean` - if set to true, in addition to being executed on a given interval, job will also be executed immediately when added or restarted. 
+
 ## API for jobs
 
 * `start(): void` - starts, or restarts (if it's already running) the job;
-* `stop(): void` - stops the job. Can be restarted again with `start` command.
+* `stop(): void` - stops the job. Can be restarted again with `start` command;
 * `getStatus(): JobStatus` - returns the status of the job, which is one of: `running`, `stopped`.
 
 ## API for scheduler

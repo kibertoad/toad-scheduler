@@ -68,6 +68,26 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    it('allows executing job immediately', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new SimpleIntervalJob(
+          {
+            hours: 33,
+            runImmediately: true,
+          },
+          task
+      )
+
+      expect(counter).toBe(0)
+      scheduler.addSimpleIntervalJob(job)
+      expect(counter).toBe(1)
+      scheduler.stop()
+    })
+
     it('correctly handles milliseconds', () => {
       let counter = 0
       const scheduler = new ToadScheduler()

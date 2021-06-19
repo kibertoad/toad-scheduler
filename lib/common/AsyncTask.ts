@@ -7,7 +7,7 @@ function defaultErrorHandler(id: string) {
 export class AsyncTask {
   private readonly id: string
   private readonly handler: () => Promise<void>
-  private errorHandler: (err: Error) => void
+  private readonly errorHandler: (err: Error) => void
 
   constructor(id: string, handler: () => Promise<void>, errorHandler?: (err: Error) => void) {
     this.id = id

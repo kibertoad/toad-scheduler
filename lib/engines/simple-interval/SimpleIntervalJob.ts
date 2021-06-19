@@ -23,6 +23,10 @@ export class SimpleIntervalJob extends Job {
       this.stop()
     }
 
+    if (this.schedule.runImmediately) {
+      this.task.execute()
+    }
+
     this.timer = setInterval(() => {
       this.task.execute()
     }, time)

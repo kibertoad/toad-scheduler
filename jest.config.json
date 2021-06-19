@@ -6,7 +6,7 @@
   },
   "testEnvironment": "node",
   "reporters": ["default"],
-  "coveragePathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/coverage/"],
+  "coveragePathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/coverage/", "<rootDir>/test/utils/"],
   "globals": {
     "ts-jest": {
       "diagnostics": false
