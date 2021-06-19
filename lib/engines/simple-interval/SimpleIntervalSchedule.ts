@@ -4,6 +4,7 @@ export type SimpleIntervalSchedule = {
   minutes?: number
   seconds?: number
   milliseconds?: number
+  runImmediately?: boolean
 }
 
 export function toMsecs(schedule: SimpleIntervalSchedule): number {
