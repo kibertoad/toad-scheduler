@@ -75,11 +75,11 @@ describe('ToadScheduler', () => {
         counter++
       })
       const job = new SimpleIntervalJob(
-          {
-            hours: 33,
-            runImmediately: true,
-          },
-          task
+        {
+          hours: 33,
+          runImmediately: true,
+        },
+        task
       )
 
       expect(counter).toBe(0)
