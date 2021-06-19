@@ -213,6 +213,23 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    it('correctly handles very large intervals', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new SimpleIntervalJob(
+        {
+          days: 25,
+        },
+        task
+      )
+
+      expect(() => scheduler.addSimpleIntervalJob(job)).toThrow(/can be scheduled correctly/)
+      scheduler.stop()
+    })
+
     it('correctly handles a combination of time units', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
