@@ -44,6 +44,17 @@ export class ToadScheduler {
     return job
   }
 
+  removeById(id: string): Job | undefined {
+    const job = this.jobRegistry[id]
+    if (!job) {
+      return
+    }
+    job.stop()
+    delete this.jobRegistry[id]
+
+    return job
+  }
+
   stopById(id: string): void {
     const job = this.getById(id)
     job.stop()
