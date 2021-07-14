@@ -30,6 +30,55 @@ describe('ToadScheduler', () => {
     })
   })
 
+  describe('removeById', () => {
+    it('correctly removes job by id', () => {
+      let counter = 0
+      let counter2 = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const task2 = new Task('simple task2', () => {
+        counter2++
+      })
+      const job = new SimpleIntervalJob(
+          {
+            milliseconds: 1,
+          },
+          task,
+          'job1'
+      )
+      const job2 = new SimpleIntervalJob(
+          {
+            milliseconds: 10,
+          },
+          task2,
+          'job2'
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+      scheduler.addSimpleIntervalJob(job2)
+
+      expect(counter).toBe(0)
+      expect(counter2).toBe(0)
+
+      const deletedJob = scheduler.removeById('job2')
+      expect(deletedJob?.id).toMatch('job2')
+      expect(() => { scheduler.getById('job2')}).toThrow(/not registered/)
+      const nonExistingJob = scheduler.removeById('job2')
+      expect(nonExistingJob).toBeUndefined()
+
+          jest.advanceTimersByTime(2)
+      expect(counter).toBe(2)
+      expect(counter2).toBe(0)
+      jest.advanceTimersByTime(10)
+      expect(counter).toBe(12)
+      expect(counter2).toBe(0)
+
+      scheduler.stop()
+    })
+  })
+
   describe('stopById', () => {
     it('throws an error when non-existent id is stopped', () => {
       const scheduler = new ToadScheduler()

@@ -76,6 +76,7 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 * `stop(): void` - stops all jobs, registered in the scheduler;
 * `getById(id: string): Job` - returns the job with a given id.
 * `stopById(id: string): void` - stops the job with a given id.
+* `removeById(id: string): Job | undefined` - stops the job with a given id and removes it from the scheduler. If no such job exists, returns `undefined`, otherwise returns the job.
 * `startById(id: string): void` - starts, or restarts (if it's already running) the job with a given id.
 
 [npm-image]: https://img.shields.io/npm/v/toad-scheduler.svg
