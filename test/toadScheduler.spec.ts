@@ -42,18 +42,18 @@ describe('ToadScheduler', () => {
         counter2++
       })
       const job = new SimpleIntervalJob(
-          {
-            milliseconds: 1,
-          },
-          task,
-          'job1'
+        {
+          milliseconds: 1,
+        },
+        task,
+        'job1'
       )
       const job2 = new SimpleIntervalJob(
-          {
-            milliseconds: 10,
-          },
-          task2,
-          'job2'
+        {
+          milliseconds: 10,
+        },
+        task2,
+        'job2'
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -64,11 +64,13 @@ describe('ToadScheduler', () => {
 
       const deletedJob = scheduler.removeById('job2')
       expect(deletedJob?.id).toMatch('job2')
-      expect(() => { scheduler.getById('job2')}).toThrow(/not registered/)
+      expect(() => {
+        scheduler.getById('job2')
+      }).toThrow(/not registered/)
       const nonExistingJob = scheduler.removeById('job2')
       expect(nonExistingJob).toBeUndefined()
 
-          jest.advanceTimersByTime(2)
+      jest.advanceTimersByTime(2)
       expect(counter).toBe(2)
       expect(counter2).toBe(0)
       jest.advanceTimersByTime(10)
