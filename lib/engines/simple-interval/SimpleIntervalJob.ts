@@ -3,7 +3,7 @@ import { Job, JobStatus } from '../../common/Job'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
-
+import { ToadScheduler } from '../../../lib/toadScheduler'
 export class SimpleIntervalJob extends Job {
   private timer?: Timeout
   private readonly schedule: SimpleIntervalSchedule
@@ -15,14 +15,15 @@ export class SimpleIntervalJob extends Job {
     let scheduleMs = toMsecs(schedule) //find the tptal of the schedule time and the limit.
     const overTime = scheduleMs - 2147483647 //find out how much we're over by
     const timeEater = new Task('time eating task', () => {
+      const scheduler = new ToadScheduler()
       scheduleMs = scheduleMs - overTime
       console.log('doing some time wasting...')
-      if (Date.now() === futureDate) {
+      if (Date.now() >= futureDate) {
         //if our current date matches the time when we wanted to execute
         // fire the real payload
         const job = new SimpleIntervalJob(
           {
-            runImmediately: true, //scheduleMs should be 2147483647 I think?
+            runImmediately: true,
           },
           task
         )
@@ -31,15 +32,16 @@ export class SimpleIntervalJob extends Job {
         const timeJob = new SimpleIntervalJob(
           {
             milliseconds: overTime,
+            //runImmediately: true,
           },
           timeEater
         )
         scheduler.addSimpleIntervalJob(timeJob)
       }
     })
+    this.task = timeEater
 
     this.schedule = schedule
-    this.task = task
   }
 
   start(): void {
