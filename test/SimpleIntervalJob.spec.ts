@@ -237,7 +237,7 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
-    it('correctly handles very large intervals', () => {
+    it.only('correctly handles very large intervals', () => {
       let counter = 0
       const daysInMs = 25 * 24 * 60 * 60 * 1000 //25 days in ms
       const scheduler = new ToadScheduler()
