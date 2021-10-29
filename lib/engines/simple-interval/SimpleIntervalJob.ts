@@ -11,6 +11,33 @@ export class SimpleIntervalJob extends Job {
 
   constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, id?: string) {
     super(id)
+    const futureDate = Date.now() + toMsecs(schedule) //find when in the future we want to execute.
+    let scheduleMs = toMsecs(schedule) //find the tptal of the schedule time and the limit.
+    const overTime = scheduleMs - 2147483647 //find out how much we're over by
+    const timeEater = new Task('time eating task', () => {
+      scheduleMs = scheduleMs - overTime
+      console.log('doing some time wasting...')
+      if (Date.now() === futureDate) {
+        //if our current date matches the time when we wanted to execute
+        // fire the real payload
+        const job = new SimpleIntervalJob(
+          {
+            runImmediately: true, //scheduleMs should be 2147483647 I think?
+          },
+          task
+        )
+        scheduler.addSimpleIntervalJob(job)
+      } else {
+        const timeJob = new SimpleIntervalJob(
+          {
+            milliseconds: overTime,
+          },
+          timeEater
+        )
+        scheduler.addSimpleIntervalJob(timeJob)
+      }
+    })
+
     this.schedule = schedule
     this.task = task
   }
@@ -18,12 +45,12 @@ export class SimpleIntervalJob extends Job {
   start(): void {
     const time = toMsecs(this.schedule)
     // See https://github.com/kibertoad/toad-scheduler/issues/24
-    if (time >= 2147483647) {
+    /*if (time >= 2147483647) {
       throw new Error(
         'Due to setInterval limitations, no intervals longer than 24.85 days can be scheduled correctly. toad-scheduler will eventually include a workaround for this, but for now your schedule is likely to break.'
       )
     }
-
+    */
     // Avoid starting duplicates and leaking previous timers
     if (this.timer) {
       this.stop()

@@ -1,5 +1,9 @@
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
+import {
+  SimpleIntervalSchedule,
+  toMsecs,
+} from '../lib/engines/simple-interval/SimpleIntervalSchedule'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 
@@ -245,8 +249,13 @@ describe('ToadScheduler', () => {
         },
         task
       )
+      scheduler.addSimpleIntervalJob(job)
 
-      expect(() => scheduler.addSimpleIntervalJob(job)).toThrow(/can be scheduled correctly/)
+      expect(counter).toBe(0)
+      jest.advanceTimersByTime(2159999999)
+      expect(counter).toBe(0)
+      jest.advanceTimersByTime(1)
+      expect(counter).toBe(1)
       scheduler.stop()
     })
 
