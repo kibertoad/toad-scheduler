@@ -8,40 +8,38 @@ export class SimpleIntervalJob extends Job {
   private timer?: Timeout
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
-
   constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, id?: string) {
     super(id)
-    const futureDate = Date.now() + toMsecs(schedule) //find when in the future we want to execute.
-    let scheduleMs = toMsecs(schedule) //find the tptal of the schedule time and the limit.
-    const overTime = scheduleMs - 2147483647 //find out how much we're over by
+    // Create a future date for this task and get the number of ms
+    const future = new Date()
+    future.setTime(Date.now() + toMsecs(schedule))
+    const futureMs = future.getTime()
     const timeEater = new Task('time eating task', () => {
+      const remainingMs = futureMs - Date.now()
       const scheduler = new ToadScheduler()
-      scheduleMs = scheduleMs - overTime
-      console.log('doing some time wasting...')
-      if (Date.now() >= futureDate) {
-        //if our current date matches the time when we wanted to execute
-        // fire the real payload
-        const job = new SimpleIntervalJob(
-          {
-            runImmediately: true,
-          },
-          task
+      const MAX_TIMEOUT_DURATION_MS = 2147483647
+      if (remainingMs > MAX_TIMEOUT_DURATION_MS) {
+        scheduler.addSimpleIntervalJob(
+          new SimpleIntervalJob(
+            {
+              milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS, remainingMs),
+            },
+            timeEater
+          )
         )
-        scheduler.addSimpleIntervalJob(job)
       } else {
-        const timeJob = new SimpleIntervalJob(
-          {
-            milliseconds: overTime,
-            //runImmediately: true,
-          },
-          timeEater
+        scheduler.addSimpleIntervalJob(
+          new SimpleIntervalJob(
+            {
+              runImmediately: true,
+            },
+            task
+          )
         )
-        scheduler.addSimpleIntervalJob(timeJob)
       }
     })
-    this.task = timeEater
-
     this.schedule = schedule
+    this.task = timeEater
   }
 
   start(): void {

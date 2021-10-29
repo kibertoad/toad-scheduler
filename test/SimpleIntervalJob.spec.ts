@@ -239,22 +239,23 @@ describe('ToadScheduler', () => {
 
     it('correctly handles very large intervals', () => {
       let counter = 0
+      const daysInMs = 25 * 24 * 60 * 60 * 1000 //25 days in ms
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
         counter++
       })
       const job = new SimpleIntervalJob(
         {
-          days: 25,
+          milliseconds: daysInMs,
         },
         task
       )
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(2159999999)
+      jest.advanceTimersByTime(daysInMs - 1000)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      jest.advanceTimersByTime(1000)
       expect(counter).toBe(1)
       scheduler.stop()
     })
