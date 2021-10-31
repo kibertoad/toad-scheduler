@@ -58,7 +58,7 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 
 ## Using IDs and ES6-style imports
 
-You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you wanna target the tasks specifically (e.g. starting, stopping or checking their status).
+You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you want to target some of the tasks specifically (e. g. in order to stop or restart them, or to check their status).
 
 ```js
 import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
