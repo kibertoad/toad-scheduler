@@ -24,7 +24,8 @@ describe('ToadScheduler', () => {
       )
       const job = new SimpleIntervalJob(
         {
-          milliseconds: 5,
+          seconds: 1,
+          runImmediately: true,
         },
         task
       )
@@ -61,7 +62,8 @@ describe('ToadScheduler', () => {
       )
       const job = new SimpleIntervalJob(
         {
-          milliseconds: 5,
+          seconds: 1,
+          runImmediately: true,
         },
         task
       )
