@@ -1,6 +1,7 @@
 import { SimpleIntervalEngine } from './engines/simple-interval/SimpleIntervalEngine'
 import { SimpleIntervalJob } from './engines/simple-interval/SimpleIntervalJob'
 import { Job } from './common/Job'
+import { LongIntervalJob } from './engines/simple-interval/LongIntervalJob'
 
 type EngineRegistry = {
   simpleIntervalEngine?: SimpleIntervalEngine
@@ -15,7 +16,11 @@ export class ToadScheduler {
     this.jobRegistry = {}
   }
 
-  addSimpleIntervalJob(job: SimpleIntervalJob): void {
+  addLongIntervalJob(job: LongIntervalJob): void {
+    return this.addSimpleIntervalJob(job)
+  }
+
+  addSimpleIntervalJob(job: SimpleIntervalJob | LongIntervalJob): void {
     if (!this.engines.simpleIntervalEngine) {
       this.engines.simpleIntervalEngine = new SimpleIntervalEngine()
     }
