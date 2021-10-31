@@ -20,7 +20,7 @@ export class SimpleIntervalJob extends Job {
     // See https://github.com/kibertoad/toad-scheduler/issues/24
     if (time >= 2147483647) {
       throw new Error(
-        'Due to setInterval limitations, no intervals longer than 24.85 days can be scheduled correctly. toad-scheduler will eventually include a workaround for this, but for now your schedule is likely to break.'
+        'Due to setInterval limitations, no intervals longer than 24.85 days can be scheduled correctly. Please create LongIntervalJob instead.'
       )
     }
 

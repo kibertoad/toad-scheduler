@@ -18,7 +18,7 @@ export class Task {
   execute(): void {
     try {
       this.handler()
-    } catch (err) {
+    } catch (err: any) {
       this.errorHandler(err)
     }
   }

@@ -1,5 +1,5 @@
 import { ToadScheduler } from '../lib/toadScheduler'
-import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
+import { LongIntervalJob } from '../lib/engines/simple-interval/LongIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 
@@ -12,41 +12,41 @@ describe('ToadScheduler', () => {
     jest.useRealTimers()
   })
 
-  describe('SimpleIntervalJob', () => {
+  describe('LongIntervalJob', () => {
     it('correctly returns status for started job', () => {
       const scheduler = new ToadScheduler()
       const task = new NoopTask()
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           seconds: 20,
         },
         task
       )
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
       expect(job.getStatus()).toBe('running')
     })
 
     it('correctly returns status for stopped job', () => {
       const scheduler = new ToadScheduler()
       const task = new NoopTask()
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           seconds: 20,
         },
         task
       )
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
       scheduler.stop()
       expect(job.getStatus()).toBe('stopped')
     })
 
-    it('correctly processes SimpleIntervalJob', () => {
+    it('correctly processes LongIntervalJob', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           seconds: 20,
         },
@@ -74,7 +74,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           hours: 33,
           runImmediately: true,
@@ -94,7 +94,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           milliseconds: 33,
         },
@@ -118,7 +118,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           milliseconds: 10,
         },
@@ -141,7 +141,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           milliseconds: 10,
         },
@@ -167,7 +167,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           minutes: 5,
         },
@@ -191,7 +191,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           hours: 1,
         },
@@ -215,7 +215,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           days: 1,
         },
@@ -239,15 +239,25 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           days: 25,
         },
         task
       )
+      scheduler.addLongIntervalJob(job)
 
-      expect(() => scheduler.addSimpleIntervalJob(job)).toThrow(/can be scheduled correctly/)
-      expect(counter).toEqual(0)
+      expect(counter).toBe(0)
+
+      for (let x = 0; x < 24; x++) {
+        jest.advanceTimersByTime(86_400_000)
+      }
+      jest.advanceTimersByTime(86_400_000 - 1000)
+      expect(counter).toBe(0)
+
+      jest.advanceTimersByTime(1000)
+      expect(counter).toBe(1)
+
       scheduler.stop()
     })
 
@@ -257,7 +267,7 @@ describe('ToadScheduler', () => {
       const task = new Task('simple task', () => {
         counter++
       })
-      const job = new SimpleIntervalJob(
+      const job = new LongIntervalJob(
         {
           days: 1,
           hours: 2,
