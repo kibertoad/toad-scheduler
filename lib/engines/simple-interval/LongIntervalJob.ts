@@ -26,14 +26,15 @@ export class LongIntervalJob extends Job {
   }
 
   private setTimeEatingJob(taskPeriod: number): void {
-    const future = new Date()
-    future.setTime(Date.now() + taskPeriod)
-    const futureMs = future.getTime()
-    const remainingMs = futureMs - Date.now()
+    const mainTaskExecutionDate = new Date()
+    mainTaskExecutionDate.setTime(Date.now() + taskPeriod)
+    const mainTaskExecutionTime = mainTaskExecutionDate.getTime()
+    const startingRemainingMs = mainTaskExecutionTime - Date.now()
 
     const timeEater = new Task('time eating task', () => {
-      const remainingMs = futureMs - Date.now()
+      const remainingMs = mainTaskExecutionTime - Date.now()
       if (remainingMs >= MAX_TIMEOUT_DURATION_MS) {
+        /* istanbul ignore next */
         this.childJob?.stop()
         this.childJob = new SimpleIntervalJob(
           {
@@ -43,6 +44,7 @@ export class LongIntervalJob extends Job {
         )
         this.childJob.start()
       } else {
+        /* istanbul ignore next */
         this.childJob?.stop()
         this.childJob = new SimpleIntervalJob(
           {
@@ -60,7 +62,7 @@ export class LongIntervalJob extends Job {
     this.childJob?.stop()
     this.childJob = new SimpleIntervalJob(
       {
-        milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, remainingMs),
+        milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, startingRemainingMs),
       },
       timeEater
     )

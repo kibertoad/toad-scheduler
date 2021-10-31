@@ -53,7 +53,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(19999)
@@ -83,7 +83,7 @@ describe('ToadScheduler', () => {
       )
 
       expect(counter).toBe(0)
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addIntervalJob(job)
       expect(counter).toBe(1)
       scheduler.stop()
     })
@@ -101,7 +101,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(32)
@@ -125,8 +125,8 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(20)
@@ -148,7 +148,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(20)
@@ -174,7 +174,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(299999)
@@ -198,7 +198,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(3599999)
@@ -222,7 +222,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(86399999)
@@ -233,7 +233,7 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
-    it('correctly handles very large intervals', () => {
+    it('correctly handles large intervals', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -250,6 +250,82 @@ describe('ToadScheduler', () => {
       expect(counter).toBe(0)
 
       for (let x = 0; x < 24; x++) {
+        jest.advanceTimersByTime(86_400_000)
+      }
+      jest.advanceTimersByTime(86_400_000 - 1000)
+      expect(counter).toBe(0)
+
+      jest.advanceTimersByTime(1000)
+      expect(counter).toBe(1)
+
+      scheduler.stop()
+    })
+
+    it('correctly handles status for large intervals', () => {
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {})
+      const job = new LongIntervalJob(
+        {
+          days: 25,
+        },
+        task
+      )
+      scheduler.addLongIntervalJob(job)
+      expect(job.getStatus()).toEqual('running')
+      job.stop()
+      expect(job.getStatus()).toEqual('stopped')
+      scheduler.stop()
+    })
+
+    it('correctly handles large intervals repeatedly', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 25,
+        },
+        task
+      )
+      scheduler.addLongIntervalJob(job)
+
+      expect(counter).toBe(0)
+
+      for (let x = 0; x < 24; x++) {
+        jest.advanceTimersByTime(86_400_000)
+      }
+      jest.advanceTimersByTime(86_400_000 - 1000)
+      expect(counter).toBe(0)
+
+      jest.advanceTimersByTime(1000)
+      expect(counter).toBe(1)
+
+      for (let x = 0; x < 25; x++) {
+        jest.advanceTimersByTime(86_400_000)
+      }
+      expect(counter).toBe(2)
+      scheduler.stop()
+    })
+
+    it('correctly handles very large intervals', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 55,
+        },
+        task
+      )
+      scheduler.addLongIntervalJob(job)
+
+      expect(counter).toBe(0)
+
+      for (let x = 0; x < 54; x++) {
         jest.advanceTimersByTime(86_400_000)
       }
       jest.advanceTimersByTime(86_400_000 - 1000)
@@ -278,7 +354,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      scheduler.addSimpleIntervalJob(job)
+      scheduler.addLongIntervalJob(job)
 
       expect(counter).toBe(0)
       jest.advanceTimersByTime(86_400_000)
