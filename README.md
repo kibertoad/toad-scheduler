@@ -73,6 +73,8 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 ## API for scheduler
 
 * `addSimpleIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job;
+* `addLongIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job with support for periods longer than 24.85 days;
+* `addIntervalJob(job: SimpleIntervalJob | LongIntervalJob): void` - registers and starts new interval-based job;
 * `stop(): void` - stops all jobs, registered in the scheduler;
 * `getById(id: string): Job` - returns the job with a given id.
 * `stopById(id: string): void` - stops the job with a given id.

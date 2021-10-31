@@ -247,6 +247,7 @@ describe('ToadScheduler', () => {
       )
 
       expect(() => scheduler.addSimpleIntervalJob(job)).toThrow(/can be scheduled correctly/)
+      expect(counter).toEqual(0)
       scheduler.stop()
     })
 

@@ -3,7 +3,6 @@ import { Job, JobStatus } from '../../common/Job'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
-import { ToadScheduler } from '../../../lib/toadScheduler'
 import { SimpleIntervalJob } from './SimpleIntervalJob'
 
 const MAX_TIMEOUT_DURATION_MS = 2147483647
@@ -47,7 +46,7 @@ export class LongIntervalJob extends Job {
         this.childJob?.stop()
         this.childJob = new SimpleIntervalJob(
           {
-            milliseconds: remainingMs,
+            milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, remainingMs),
           },
           new Task('Final mile task', () => {
             this.setTimeEatingJob(toMsecs(this.schedule))

@@ -16,11 +16,7 @@ export class ToadScheduler {
     this.jobRegistry = {}
   }
 
-  addLongIntervalJob(job: LongIntervalJob): void {
-    return this.addSimpleIntervalJob(job)
-  }
-
-  addSimpleIntervalJob(job: SimpleIntervalJob | LongIntervalJob): void {
+  addIntervalJob(job: SimpleIntervalJob | LongIntervalJob) {
     if (!this.engines.simpleIntervalEngine) {
       this.engines.simpleIntervalEngine = new SimpleIntervalEngine()
     }
@@ -33,6 +29,14 @@ export class ToadScheduler {
     }
 
     this.engines.simpleIntervalEngine.add(job)
+  }
+
+  addLongIntervalJob(job: LongIntervalJob): void {
+    return this.addIntervalJob(job)
+  }
+
+  addSimpleIntervalJob(job: SimpleIntervalJob): void {
+    return this.addIntervalJob(job)
   }
 
   stop(): void {
