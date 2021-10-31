@@ -31,6 +31,7 @@ scheduler.addSimpleIntervalJob(job)
 scheduler.stop()
 ```
 
+
 ## Usage with async tasks
 
 In order to avoid unhandled rejections, make sure to use AsyncTask if your task is asynchronous:
@@ -54,6 +55,50 @@ scheduler.stop()
 ```
 
 Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition. See [talk on common Promise mistakes](https://www.youtube.com/watch?v=XV-u_Ow47s0) for more details.
+
+## Using IDs and ES6-style imports
+
+You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you want to target some of the tasks specifically (e. g. in order to stop or restart them, or to check their status).
+
+```js
+import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+
+const scheduler = new ToadScheduler();
+
+const task = new Task('simple task', () => {
+	console.log('Task triggered');
+});
+
+const job1 = new SimpleIntervalJob(
+	{ seconds: 20, runImmediately: true },
+	task,
+	'id_1'
+);
+
+const job2 = new SimpleIntervalJob(
+	{ seconds: 15, runImmediately: true },
+	task,
+	'id_2'
+);
+
+//create and start jobs
+scheduler.addSimpleIntervalJob(job1);
+scheduler.addSimpleIntervalJob(job2);
+
+// stop job with ID: id_2
+scheduler.stopById('id_2');
+
+// remove job with ID: id_1
+scheduler.removeById('id_1');
+
+// check status of jobs
+console.log(scheduler.getById('id_1').getStatus()); // returns Error (job not found)
+
+console.log(scheduler.getById('id_2').getStatus()); // returns "stopped" and can be started again
+
+```
+
+
 
 ## API for schedule
 
