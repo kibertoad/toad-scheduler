@@ -249,7 +249,7 @@ describe('ToadScheduler', () => {
 
       expect(counter).toBe(0)
 
-      for (let x = 0; x < 25; x++) {
+      for (let x = 0; x < 24; x++) {
         jest.advanceTimersByTime(86_400_000)
       }
       jest.advanceTimersByTime(86_400_000 - 1000)

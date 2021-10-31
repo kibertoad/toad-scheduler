@@ -42,6 +42,7 @@ export class LongIntervalJob extends Job {
           },
           timeEater
         )
+        this.childJob.start()
       } else {
         this.childJob?.stop()
         this.childJob = new SimpleIntervalJob(
@@ -53,6 +54,7 @@ export class LongIntervalJob extends Job {
             return this.task.execute()
           })
         )
+        this.childJob.start()
       }
     })
 
@@ -63,6 +65,7 @@ export class LongIntervalJob extends Job {
       },
       timeEater
     )
+    this.childJob.start()
   }
 
   start(): void {
