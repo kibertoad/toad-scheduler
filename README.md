@@ -55,6 +55,11 @@ scheduler.stop()
 
 Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition. See [talk on common Promise mistakes](https://www.youtube.com/watch?v=XV-u_Ow47s0) for more details.
 
+## Asynchronous error handling
+
+Note that your error handlers can be asynchronous and return a promise. In such case an additional catch block will be attached to them, and should
+there be an error while trying to resolve that promise, and logging error will be logged using the default error handler (`console.error`).
+
 ## API for schedule
 
 * `days?: number` - how many days to wait before executing the job for the next time;

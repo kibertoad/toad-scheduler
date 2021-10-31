@@ -40,6 +40,43 @@ describe('ToadScheduler', () => {
       })
     })
 
+    it('correctly handles errors asynchronously', (done) => {
+      jest.useRealTimers()
+      expect.assertions(1)
+      let error: string
+      const scheduler = new ToadScheduler()
+      const task = new AsyncTask(
+        'async task',
+        () => {
+          return Promise.resolve().then(() => {
+            throw new Error('kaboom')
+          })
+        },
+        (err: Error) => {
+          return Promise.resolve(() => {
+            return 'dummy'
+          }).then(() => {
+            error = err.message
+            throw new Error('error while handling error')
+          })
+        }
+      )
+      const job = new SimpleIntervalJob(
+        {
+          milliseconds: 5,
+        },
+        task
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+
+      sleep(10).then(() => {
+        expect(error).toBe('kaboom')
+        scheduler.stop()
+        done()
+      })
+    })
+
     it('correctly handles async rejections', (done) => {
       jest.useRealTimers()
       expect.assertions(1)
