@@ -1,5 +1,5 @@
 import { defaultErrorHandler, loggingErrorHandler } from './Logger'
-import { types } from 'util'
+import { isPromise } from './Utils'
 
 export class AsyncTask {
   private readonly id: string
@@ -15,7 +15,7 @@ export class AsyncTask {
   execute(): void {
     this.handler().catch((err: Error) => {
       const errorHandleResult = this.errorHandler(err)
-      if (types.isPromise(errorHandleResult)) {
+      if (isPromise(errorHandleResult)) {
         // If we fail while handling an error, oh well
         errorHandleResult.catch(loggingErrorHandler(err))
       }
