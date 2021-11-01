@@ -1,13 +1,10 @@
-function defaultErrorHandler(id: string) {
-  return (err: Error): void => {
-    console.error(`Error while handling task ${id}: ${err.message}`)
-  }
-}
+import { defaultErrorHandler, loggingErrorHandler } from './Logger'
+import { types } from 'util'
 
 export class Task {
   private readonly id: string
   private readonly handler: () => void
-  private readonly errorHandler: (err: Error) => void
+  private readonly errorHandler: (err: Error) => void | Promise<void>
 
   constructor(id: string, handler: () => void, errorHandler?: (err: Error) => void) {
     this.id = id
@@ -19,7 +16,11 @@ export class Task {
     try {
       this.handler()
     } catch (err: any) {
-      this.errorHandler(err)
+      const errorHandleResult = this.errorHandler(err)
+      if (types.isPromise(errorHandleResult)) {
+        // If we fail while handling an error, oh well
+        errorHandleResult.catch(loggingErrorHandler(err))
+      }
     }
   }
 }

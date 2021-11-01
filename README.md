@@ -56,6 +56,11 @@ scheduler.stop()
 
 Note that in order to avoid memory leaks, it is recommended to use promise chains instead of async/await inside task definition. See [talk on common Promise mistakes](https://www.youtube.com/watch?v=XV-u_Ow47s0) for more details.
 
+## Asynchronous error handling
+
+Note that your error handlers can be asynchronous and return a promise. In such case an additional catch block will be attached to them, and should
+there be an error while trying to resolve that promise, and logging error will be logged using the default error handler (`console.error`).
+
 ## Using IDs and ES6-style imports
 
 You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you want to target some of the tasks specifically (e. g. in order to stop or restart them, or to check their status).
@@ -97,8 +102,6 @@ console.log(scheduler.getById('id_1').getStatus()); // returns Error (job not fo
 console.log(scheduler.getById('id_2').getStatus()); // returns "stopped" and can be started again
 
 ```
-
-
 
 ## API for schedule
 
