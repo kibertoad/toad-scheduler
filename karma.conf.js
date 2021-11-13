@@ -1,7 +1,7 @@
-module.exports = function (config: any) {
+export default function (config) {
   config.set({
-    frameworks: ['mocha', 'chai'],
-    files: [{ pattern: 'karmaTests/**/*.ts', type: 'js' }],
+    frameworks: ['mocha', 'chai', 'jasmine'],
+    files: [{ pattern: 'karmaTests/**/*.js' }],
     reporters: ['progress'],
     port: 9876, // karma web server port
     colors: true,

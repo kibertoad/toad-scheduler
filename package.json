@@ -15,7 +15,7 @@
     "build": "tsc",
     "test": "jest --config=jest.config.json",
     "test:coverage": "jest --config=jest.config.json --coverage",
-    "karmaTest": "karma start --single-run --browsers ChromeHeadless karma.conf.ts",
+    "karmaTest": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "lint": "eslint --format codeframe \"lib/**/*.ts\" \"test/**/*.ts\"",
     "prettier": "prettier --write \"{lib,test}/**/*.{js,ts}\" index.ts",
     "prepublishOnly": "npm run build"
