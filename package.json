@@ -15,6 +15,7 @@
     "build": "tsc",
     "test": "jest --config=jest.config.json",
     "test:coverage": "jest --config=jest.config.json --coverage",
+    "karmaTest": "karma start --single-run --browsers ChromeHeadless karma.conf.ts",
     "lint": "eslint --format codeframe \"lib/**/*.ts\" \"test/**/*.ts\"",
     "prettier": "prettier --write \"{lib,test}/**/*.{js,ts}\" index.ts",
     "prepublishOnly": "npm run build"
@@ -24,13 +25,20 @@
     "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
+    "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.3.1",
+    "karma": "^6.3.8",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^2.0.1",
+    "mocha": "^9.1.3",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
-    "typescript": "4.4.4"
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   },
   "homepage": "https://github.com/kibertoad/toad-scheduler",
   "repository": {
