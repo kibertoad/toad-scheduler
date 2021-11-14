@@ -2,14 +2,15 @@ import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
+import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    mockTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    unMockTimers()
   })
 
   describe('getById', () => {
@@ -66,14 +67,14 @@ describe('ToadScheduler', () => {
       expect(deletedJob?.id).toMatch('job2')
       expect(() => {
         scheduler.getById('job2')
-      }).toThrow(/not registered/)
+      }).toThrowError(/not registered/)
       const nonExistingJob = scheduler.removeById('job2')
       expect(nonExistingJob).toBeUndefined()
 
-      jest.advanceTimersByTime(2)
+      advanceTimersByTime(2)
       expect(counter).toBe(2)
       expect(counter2).toBe(0)
-      jest.advanceTimersByTime(10)
+      advanceTimersByTime(10)
       expect(counter).toBe(12)
       expect(counter2).toBe(0)
 
@@ -86,7 +87,7 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       expect(() => {
         scheduler.stopById('dummy')
-      }).toThrow(/Job with an id dummy is not registered./)
+      }).toThrowError(/Job with an id dummy is not registered./)
     })
 
     it('correctly stops job by id', () => {
@@ -122,10 +123,10 @@ describe('ToadScheduler', () => {
 
       scheduler.stopById('job2')
 
-      jest.advanceTimersByTime(2)
+      advanceTimersByTime(2)
       expect(counter).toBe(2)
       expect(counter2).toBe(0)
-      jest.advanceTimersByTime(10)
+      advanceTimersByTime(10)
       expect(counter).toBe(12)
       expect(counter2).toBe(0)
 
@@ -138,7 +139,7 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       expect(() => {
         scheduler.startById('dummy')
-      }).toThrow(/Job with an id dummy is not registered./)
+      }).toThrowError(/Job with an id dummy is not registered./)
     })
 
     it('correctly starts job by id', () => {
@@ -175,10 +176,10 @@ describe('ToadScheduler', () => {
       scheduler.stopById('job2')
       scheduler.startById('job2')
 
-      jest.advanceTimersByTime(2)
+      advanceTimersByTime(2)
       expect(counter).toBe(2)
       expect(counter2).toBe(0)
-      jest.advanceTimersByTime(10)
+      advanceTimersByTime(10)
       expect(counter).toBe(12)
       expect(counter2).toBe(1)
 
@@ -207,7 +208,7 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
       expect(() => {
         scheduler.addSimpleIntervalJob(job2)
-      }).toThrow(/Job with an id job1 is already registered/)
+      }).toThrowError(/Job with an id job1 is already registered/)
     })
 
     it('correctly stops without any jobs', () => {
@@ -250,10 +251,10 @@ describe('ToadScheduler', () => {
 
       expect(counter).toBe(0)
       expect(counter2).toBe(0)
-      jest.advanceTimersByTime(2)
+      advanceTimersByTime(2)
       expect(counter).toBe(2)
       expect(counter2).toBe(0)
-      jest.advanceTimersByTime(10)
+      advanceTimersByTime(10)
       expect(counter).toBe(12)
       expect(counter2).toBe(1)
 

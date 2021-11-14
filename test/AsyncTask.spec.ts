@@ -1,6 +1,8 @@
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { AsyncTask } from '../lib/common/AsyncTask'
+import { unMockTimers } from './utils/timerUtils'
+import { expectAssertions } from './utils/assertUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -9,8 +11,8 @@ function sleep(ms: number) {
 describe('ToadScheduler', () => {
   describe('AsyncTask', () => {
     it('correctly handles async errors', (done) => {
-      jest.useRealTimers()
-      expect.assertions(1)
+      unMockTimers()
+      expectAssertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
@@ -42,8 +44,8 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles errors asynchronously', (done) => {
-      jest.useRealTimers()
-      expect.assertions(1)
+      unMockTimers()
+      expectAssertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
@@ -80,8 +82,8 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles async rejections', (done) => {
-      jest.useRealTimers()
-      expect.assertions(1)
+      unMockTimers()
+      expectAssertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
