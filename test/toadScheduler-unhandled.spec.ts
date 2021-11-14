@@ -2,6 +2,8 @@ import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
 import { AsyncTask } from '../lib/common/AsyncTask'
+import { unMockTimers } from './utils/timerUtils'
+import { expectAssertions } from './utils/assertUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -17,13 +19,13 @@ describe('Rejection handling', () => {
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    unMockTimers()
   })
 
   describe('Task', () => {
     it('default error handler does not leak unhandled rejections', (done) => {
-      jest.useRealTimers()
-      expect.assertions(2)
+      unMockTimers()
+      expectAssertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new Task('task', () => {
@@ -50,8 +52,8 @@ describe('Rejection handling', () => {
 
   describe('AsyncTask', () => {
     it('default error handler does not leak unhandled rejections on errors', (done) => {
-      jest.useRealTimers()
-      expect.assertions(2)
+      unMockTimers()
+      expectAssertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('async task', () => {
@@ -78,8 +80,8 @@ describe('Rejection handling', () => {
     })
 
     it('default error handler does not leak unhandled rejections on rejected promises', (done) => {
-      jest.useRealTimers()
-      expect.assertions(2)
+      unMockTimers()
+      expectAssertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('async task', () => {

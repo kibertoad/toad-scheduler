@@ -2,14 +2,15 @@ import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
+import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    mockTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    unMockTimers()
   })
 
   describe('SimpleIntervalJob', () => {
@@ -56,13 +57,13 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(19999)
+      advanceTimersByTime(19999)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
-      jest.advanceTimersByTime(19999)
+      advanceTimersByTime(19999)
       expect(counter).toBe(1)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(2)
 
       scheduler.stop()
@@ -104,9 +105,9 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(32)
+      advanceTimersByTime(32)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
 
       scheduler.stop()
@@ -129,7 +130,7 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(20)
+      advanceTimersByTime(20)
       expect(counter).toBe(2)
 
       scheduler.stop()
@@ -151,13 +152,13 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(20)
+      advanceTimersByTime(20)
       expect(counter).toBe(2)
 
       scheduler.stop()
       scheduler.stop()
 
-      jest.advanceTimersByTime(20)
+      advanceTimersByTime(20)
       expect(counter).toBe(2)
     })
 
@@ -177,9 +178,9 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(299999)
+      advanceTimersByTime(299999)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
 
       scheduler.stop()
@@ -201,9 +202,9 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(3599999)
+      advanceTimersByTime(3599999)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
 
       scheduler.stop()
@@ -225,9 +226,9 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(86399999)
+      advanceTimersByTime(86399999)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
 
       scheduler.stop()
@@ -246,7 +247,7 @@ describe('ToadScheduler', () => {
         task
       )
 
-      expect(() => scheduler.addSimpleIntervalJob(job)).toThrow(/can be scheduled correctly/)
+      expect(() => scheduler.addSimpleIntervalJob(job)).toThrowError(/can be scheduled correctly/)
       expect(counter).toEqual(0)
       scheduler.stop()
     })
@@ -271,13 +272,13 @@ describe('ToadScheduler', () => {
       scheduler.addSimpleIntervalJob(job)
 
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(86_400_000)
-      jest.advanceTimersByTime(3_600_000 * 2)
-      jest.advanceTimersByTime(60_000 * 3)
-      jest.advanceTimersByTime(1_000 * 4)
-      jest.advanceTimersByTime(4)
+      advanceTimersByTime(86_400_000)
+      advanceTimersByTime(3_600_000 * 2)
+      advanceTimersByTime(60_000 * 3)
+      advanceTimersByTime(1_000 * 4)
+      advanceTimersByTime(4)
       expect(counter).toBe(0)
-      jest.advanceTimersByTime(1)
+      advanceTimersByTime(1)
       expect(counter).toBe(1)
 
       scheduler.stop()
