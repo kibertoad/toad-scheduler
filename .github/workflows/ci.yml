@@ -32,7 +32,7 @@ jobs:
           npm run test
       - name: Run Karma Tests
         run: |
-          npm run karmaTest
+          npm run test:karma
 
   automerge:
     needs: build
