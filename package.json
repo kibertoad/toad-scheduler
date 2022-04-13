@@ -32,7 +32,7 @@
     "jest": "^27.3.1",
     "karma": "^6.3.9",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-jasmine": "^4.0.1",
+    "karma-jasmine": "^5.0.0",
     "karma-typescript": "^5.5.2",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.1",
