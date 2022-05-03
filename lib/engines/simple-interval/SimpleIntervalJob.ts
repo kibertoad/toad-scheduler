@@ -1,6 +1,6 @@
 import Timeout = NodeJS.Timeout
 import { AsyncTask } from '../../common/AsyncTask'
-import { Job, JobStatus } from '../../common/Job'
+import { Job, JobStatus, JobStatusEnum } from '../../common/Job'
 import { Task } from '../../common/Task'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 
@@ -48,8 +48,8 @@ export class SimpleIntervalJob extends Job {
 
   getStatus(): JobStatus {
     if (this.timer) {
-      return 'running'
+      return JobStatusEnum.RUNNING
     }
-    return 'stopped'
+    return JobStatusEnum.STOPPED
   }
 }
