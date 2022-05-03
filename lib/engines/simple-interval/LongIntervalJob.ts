@@ -1,9 +1,9 @@
 import Timeout = NodeJS.Timeout
-import { Job, JobStatus } from '../../common/Job'
-import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
-import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
+import { Job, JobStatus } from '../../common/Job'
+import { Task } from '../../common/Task'
 import { SimpleIntervalJob } from './SimpleIntervalJob'
+import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 
 const MAX_TIMEOUT_DURATION_MS = 2147483647
 
@@ -105,8 +105,8 @@ export class LongIntervalJob extends Job {
       return this.childJob.getStatus()
     }
     if (this.timer) {
-      return JobStatus.RUNNING
+      return 'running'
     }
-    return JobStatus.STOPPED
+    return 'stopped'
   }
 }

@@ -1,7 +1,4 @@
-export enum JobStatus {
-  RUNNING = 'running',
-  STOPPED = 'stopped',
-}
+export type JobStatus = 'running' | 'stopped'
 
 export abstract class Job {
   public readonly id: string | undefined
