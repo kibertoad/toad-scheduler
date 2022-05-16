@@ -3,9 +3,11 @@ import { JobStatus, SimpleIntervalJob, Task, ToadScheduler } from '../index'
 describe('import', () => {
   it('JobStatus', () => {
     const scheduler = new ToadScheduler()
+    let hasRun = false
+    let isRunning = false
 
     const task = new Task('Sample task', () => {
-      console.log('I Ran!')
+      hasRun = true
     })
 
     const job = new SimpleIntervalJob({ seconds: 5 }, task)
@@ -13,7 +15,11 @@ describe('import', () => {
     scheduler.addSimpleIntervalJob(job)
 
     if (job.getStatus() === JobStatus.RUNNING) {
-      console.log('Job is running!')
+      isRunning = true
     }
+    expect(isRunning).toEqual(true)
+    expect(hasRun).toEqual(false)
+
+    scheduler.stop()
   })
 })
