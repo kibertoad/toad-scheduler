@@ -1,6 +1,4 @@
-export type JobStatus = 'running' | 'stopped'
-
-export enum JobStatusEnum {
+export enum JobStatus {
   RUNNING = 'running',
   STOPPED = 'stopped'
 }
