@@ -1,6 +1,6 @@
 export enum JobStatus {
   RUNNING = 'running',
-  STOPPED = 'stopped'
+  STOPPED = 'stopped',
 }
 
 export abstract class Job {
