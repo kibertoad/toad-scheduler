@@ -1,7 +1,12 @@
-import { JobStatus, SimpleIntervalJob, Task, ToadScheduler } from '../index'
+import {isJest} from "./utils/assertUtils";
 
 describe('import', () => {
-  it('JobStatus', () => {
+  it('JobStatus', async () => {
+    if (!isJest) {
+      return
+    }
+    const { JobStatus, SimpleIntervalJob, Task, ToadScheduler } = await import('../index')
+
     const scheduler = new ToadScheduler()
     let hasRun = false
     let isRunning = false
