@@ -14,13 +14,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x, 17.x]
+        node-version: [10.x, 12.x, 14.x, 16.x, 18.x]
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Use Node.js
-        uses: actions/setup-node@v3.2.0
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -38,6 +38,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: fastify/github-action-merge-dependabot@v2.7.1
+      - uses: fastify/github-action-merge-dependabot@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

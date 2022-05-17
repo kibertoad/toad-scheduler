@@ -1,8 +1,8 @@
 import Timeout = NodeJS.Timeout
-import { Job, JobStatus } from '../../common/Job'
-import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
-import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
+import { Job, JobStatus } from '../../common/Job'
+import { Task } from '../../common/Task'
+import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 
 export class SimpleIntervalJob extends Job {
   private timer?: Timeout
