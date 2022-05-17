@@ -1,4 +1,4 @@
-import {isJest} from "./utils/assertUtils";
+import { isJest } from './utils/assertUtils'
 
 describe('import', () => {
   it('JobStatus', async () => {
