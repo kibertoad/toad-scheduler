@@ -21,7 +21,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^28.1.8",
+    "@types/jest": "^29.1.2",
     "@types/node": "^18.8.4",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
