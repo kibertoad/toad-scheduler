@@ -2,7 +2,7 @@ import Timeout = NodeJS.Timeout
 import { AsyncTask } from '../../common/AsyncTask'
 import { Job, JobStatus } from '../../common/Job'
 import { Task } from '../../common/Task'
-import { SimpleIntervalJob } from './SimpleIntervalJob'
+import { JobOptions, SimpleIntervalJob } from './SimpleIntervalJob'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 
 const MAX_TIMEOUT_DURATION_MS = 2147483647
@@ -12,8 +12,10 @@ export class LongIntervalJob extends Job {
   private timer?: Timeout
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
-  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, id?: string) {
-    super(id)
+  private readonly preventOverrun: boolean
+  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
+    super(options.id)
+    this.preventOverrun = options.preventOverrun ?? true
     this.schedule = schedule
     this.task = task
 
@@ -85,7 +87,9 @@ export class LongIntervalJob extends Job {
     }
 
     this.timer = setInterval(() => {
-      this.task.execute()
+      if (!this.task.isExecuting || !this.preventOverrun) {
+        this.task.execute()
+      }
     }, time)
   }
 

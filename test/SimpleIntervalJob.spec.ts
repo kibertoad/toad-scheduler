@@ -3,6 +3,7 @@ import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleInterval
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
+import { AsyncTask } from '../lib/common/AsyncTask'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -66,6 +67,72 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1)
       expect(counter).toBe(2)
 
+      scheduler.stop()
+    })
+
+    it('allows preventing SimpleIntervalJob execution overrun', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+        advanceTimersByTime(5000)
+      })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 2,
+        },
+        task,
+        {
+          preventOverrun: true,
+        }
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+
+      expect(counter).toBe(0)
+      advanceTimersByTime(1999)
+      expect(counter).toBe(0)
+      advanceTimersByTime(1)
+      expect(counter).toBe(1)
+      advanceTimersByTime(999)
+      expect(counter).toBe(1)
+      advanceTimersByTime(1)
+      expect(counter).toBe(2)
+      scheduler.stop()
+    })
+
+    it('allows preventing SimpleIntervalJob execution overrun with async tasks', async () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new AsyncTask('simple task', () => {
+        counter++
+        advanceTimersByTime(5000)
+        return Promise.resolve(undefined)
+      })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 2,
+        },
+        task,
+        {
+          preventOverrun: true,
+        }
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+
+      expect(counter).toBe(0)
+      advanceTimersByTime(1999)
+      await Promise.resolve() // this allows promises to play nice with mocked timers
+      expect(counter).toBe(0)
+      advanceTimersByTime(1)
+      await Promise.resolve()
+      expect(counter).toBe(1)
+      await Promise.resolve()
+      advanceTimersByTime(999)
+      expect(counter).toBe(1)
+      advanceTimersByTime(1)
+      expect(counter).toBe(2)
       scheduler.stop()
     })
 

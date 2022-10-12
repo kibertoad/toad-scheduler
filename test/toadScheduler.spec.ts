@@ -22,7 +22,7 @@ describe('ToadScheduler', () => {
           seconds: 20,
         },
         task,
-        'id'
+        { id: 'id' }
       )
       scheduler.addSimpleIntervalJob(job)
       const retrievedJob = scheduler.getById('id')
@@ -47,14 +47,14 @@ describe('ToadScheduler', () => {
           milliseconds: 1,
         },
         task,
-        'job1'
+        { id: 'job1' }
       )
       const job2 = new SimpleIntervalJob(
         {
           milliseconds: 10,
         },
         task2,
-        'job2'
+        { id: 'job2' }
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -105,14 +105,14 @@ describe('ToadScheduler', () => {
           milliseconds: 1,
         },
         task,
-        'job1'
+        { id: 'job1' }
       )
       const job2 = new SimpleIntervalJob(
         {
           milliseconds: 10,
         },
         task2,
-        'job2'
+        { id: 'job2' }
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -157,14 +157,14 @@ describe('ToadScheduler', () => {
           milliseconds: 1,
         },
         task,
-        'job1'
+        { id: 'job1' }
       )
       const job2 = new SimpleIntervalJob(
         {
           milliseconds: 10,
         },
         task2,
-        'job2'
+        { id: 'job2' }
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -195,14 +195,14 @@ describe('ToadScheduler', () => {
           milliseconds: 1,
         },
         new NoopTask(),
-        'job1'
+        { id: 'job1' }
       )
       const job2 = new SimpleIntervalJob(
         {
           milliseconds: 10,
         },
         new NoopTask(),
-        'job1'
+        { id: 'job1' }
       )
 
       scheduler.addSimpleIntervalJob(job)
