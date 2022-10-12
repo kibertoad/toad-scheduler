@@ -4,13 +4,20 @@ import { Job, JobStatus } from '../../common/Job'
 import { Task } from '../../common/Task'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 
+export type JobOptions = {
+  preventOverrun?: boolean
+  id?: string
+}
+
 export class SimpleIntervalJob extends Job {
   private timer?: Timeout
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
+  private readonly preventOverrun: boolean
 
-  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, id?: string) {
-    super(id)
+  constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
+    super(options.id)
+    this.preventOverrun = options.preventOverrun ?? true
     this.schedule = schedule
     this.task = task
   }
@@ -34,7 +41,9 @@ export class SimpleIntervalJob extends Job {
     }
 
     this.timer = setInterval(() => {
-      this.task.execute()
+      if (!this.task.isExecuting || !this.preventOverrun) {
+        this.task.execute()
+      }
     }, time)
   }
 

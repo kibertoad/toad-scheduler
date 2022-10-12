@@ -61,6 +61,32 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 Note that your error handlers can be asynchronous and return a promise. In such case an additional catch block will be attached to them, and should
 there be an error while trying to resolve that promise, and logging error will be logged using the default error handler (`console.error`).
 
+## Preventing task run overruns
+
+In case you want to prevent second instance of a task from being fired up while first one is still executing, you can use `preventOverrun` options:
+```js
+import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+
+const scheduler = new ToadScheduler();
+
+const task = new Task('simple task', () => {
+    // if this task runs long, second one won't be started until this one concludes
+	console.log('Task triggered');
+});
+
+const job = new SimpleIntervalJob(
+	{ seconds: 20, runImmediately: true },
+	task,
+    { 
+        id: 'id_1',
+        preventOverrun: true,
+    }
+);
+
+//create and start jobs
+scheduler.addSimpleIntervalJob(job);
+```
+
 ## Using IDs and ES6-style imports
 
 You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you want to target some of the tasks specifically (e. g. in order to stop or restart them, or to check their status).
@@ -77,13 +103,13 @@ const task = new Task('simple task', () => {
 const job1 = new SimpleIntervalJob(
 	{ seconds: 20, runImmediately: true },
 	task,
-	'id_1'
+    { id: 'id_1' }
 );
 
 const job2 = new SimpleIntervalJob(
 	{ seconds: 15, runImmediately: true },
 	task,
-	'id_2'
+    { id: 'id_2' }
 );
 
 //create and start jobs

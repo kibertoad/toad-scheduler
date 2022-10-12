@@ -3,6 +3,7 @@ import { LongIntervalJob } from '../lib/engines/simple-interval/LongIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
+import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 
 const isJest = process.env.JEST_WORKER_ID !== undefined
 const isJasmine = !isJest
@@ -69,6 +70,37 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1)
       expect(counter).toBe(2)
 
+      scheduler.stop()
+    })
+
+    it('allows preventing LongIntervalJob execution overrun', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+        advanceTimersByTime(5000)
+      })
+      const job = new LongIntervalJob(
+        {
+          seconds: 2,
+        },
+        task,
+        {
+          preventOverrun: true,
+        }
+      )
+
+      scheduler.addLongIntervalJob(job)
+
+      expect(counter).toBe(0)
+      advanceTimersByTime(1999)
+      expect(counter).toBe(0)
+      advanceTimersByTime(1)
+      expect(counter).toBe(1)
+      advanceTimersByTime(999)
+      expect(counter).toBe(1)
+      advanceTimersByTime(1)
+      expect(counter).toBe(2)
       scheduler.stop()
     })
 
