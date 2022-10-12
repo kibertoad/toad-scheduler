@@ -131,6 +131,11 @@ console.log(scheduler.getById('id_2').getStatus()); // returns "stopped" and can
 
 ```
 
+## Usage in clustered environments
+
+`toad-scheduler` does not persist its state by design, and has no out-of-the-box concurrency management features. In case it is necessary
+to prevent parallel execution of jobs in clustered environment, it is highly recommended to use [redis-semaphore](https://github.com/swarthy/redis-semaphore) in your tasks.
+
 ## API for schedule
 
 * `days?: number` - how many days to wait before executing the job for the next time;
