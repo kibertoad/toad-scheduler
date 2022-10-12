@@ -2,7 +2,7 @@
   "name": "toad-scheduler",
   "version": "2.0.0",
   "license": "MIT",
-  "description": "In-memory Node.js job scheduler",
+  "description": "In-memory Node.js and browser job scheduler",
   "maintainers": [
     {
       "name": "Igor Savin",
@@ -47,6 +47,7 @@
     "schedule",
     "scheduler",
     "in-memory",
+    "browser",
     "job",
     "task"
   ],
