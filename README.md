@@ -136,6 +136,85 @@ console.log(scheduler.getById('id_2').getStatus()); // returns "stopped" and can
 `toad-scheduler` does not persist its state by design, and has no out-of-the-box concurrency management features. In case it is necessary
 to prevent parallel execution of jobs in clustered environment, it is highly recommended to use [redis-semaphore](https://github.com/swarthy/redis-semaphore) in your tasks.
 
+Here is an example:
+
+```ts
+import { randomUUID } from 'crypto'
+
+import type Redis from 'ioredis'
+import { Mutex } from 'redis-semaphore'
+import type { LockOptions } from 'redis-semaphore'
+import { AsyncTask } from 'toad-scheduler';
+
+export type BackgroundJobConfiguration = {
+    jobId: string
+}
+
+export type LockConfiguration = {
+    lockName?: string
+    refreshInterval?: number
+    lockTimeout: number
+}
+
+export abstract class AbstractBackgroundJob {
+    public readonly jobId: string
+    protected readonly redis: Redis
+
+    protected constructor(
+        options: BackgroundJobConfiguration,
+        redis: Redis,
+    ) {
+        this.jobId = options.jobId
+        this.redis = redis
+    }
+
+    protected abstract processInternal(executionUuid: string): Promise<void>
+
+    async process() {
+        const uuid = randomUUID()
+
+        try {
+            await this.processInternal(uuid)
+        } catch (err) {
+            console.error(logObject)
+        }
+    }
+
+    protected getJobMutex(key: string, options: LockOptions) {
+        return new Mutex(this.redis, this.getJobLockName(key), options)
+    }
+
+    protected async tryAcquireExclusiveLock(lockConfiguration: LockConfiguration) {
+        const mutex = this.getJobMutex(lockConfiguration.lockName ?? 'exclusive', {
+            acquireAttemptsLimit: 1,
+            refreshInterval: lockConfiguration.refreshInterval,
+            lockTimeout: lockConfiguration.lockTimeout,
+        })
+
+        const lock = await mutex.tryAcquire()
+        // If someone else already has this lock, skip
+        if (!lock) {
+            return
+        }
+
+        return mutex
+    }
+
+    protected getJobLockName(key: string) {
+        return `${this.jobId}:locks:${key}`
+    }
+}
+
+function createTask(job: AbstractBackgroundJob): AsyncTask {
+    return new AsyncTask(
+        job.jobId,
+        () => {
+            return job.process()
+        },
+    )
+}
+```
+
 ## API for schedule
 
 * `days?: number` - how many days to wait before executing the job for the next time;
@@ -158,6 +237,7 @@ to prevent parallel execution of jobs in clustered environment, it is highly rec
 * `addIntervalJob(job: SimpleIntervalJob | LongIntervalJob): void` - registers and starts new interval-based job;
 * `stop(): void` - stops all jobs, registered in the scheduler;
 * `getById(id: string): Job` - returns the job with a given id.
+* `existsById(id: string): boolean` - returns true if job with given id exists, false otherwise.
 * `stopById(id: string): void` - stops the job with a given id.
 * `removeById(id: string): Job | undefined` - stops the job with a given id and removes it from the scheduler. If no such job exists, returns `undefined`, otherwise returns the job.
 * `startById(id: string): void` - starts, or restarts (if it's already running) the job with a given id.

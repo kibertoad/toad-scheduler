@@ -3,7 +3,6 @@ import { LongIntervalJob } from '../lib/engines/simple-interval/LongIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
-import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 
 const isJest = process.env.JEST_WORKER_ID !== undefined
 const isJasmine = !isJest

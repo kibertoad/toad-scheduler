@@ -53,6 +53,14 @@ export class ToadScheduler {
     return job
   }
 
+  existsById(id: string): boolean {
+    const job = this.jobRegistry[id]
+    if (!job) {
+      return false
+    }
+    return true
+  }
+
   removeById(id: string): Job | undefined {
     const job = this.jobRegistry[id]
     if (!job) {
