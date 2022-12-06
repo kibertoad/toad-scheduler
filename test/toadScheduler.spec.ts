@@ -31,6 +31,38 @@ describe('ToadScheduler', () => {
     })
   })
 
+  describe('existsById', () => {
+    it('returns true for existing job', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id' }
+      )
+      scheduler.addSimpleIntervalJob(job)
+      const result = scheduler.existsById('id')
+      expect(result).toBe(true)
+    })
+
+    it('returns false for non-existing job', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id' }
+      )
+      scheduler.addSimpleIntervalJob(job)
+      const result = scheduler.existsById('id2')
+      expect(result).toBe(false)
+    })
+  })
+
   describe('removeById', () => {
     it('correctly removes job by id', () => {
       let counter = 0
