@@ -1,6 +1,6 @@
 {
   "name": "toad-scheduler",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "license": "MIT",
   "description": "In-memory Node.js and browser job scheduler",
   "maintainers": [
@@ -17,15 +17,15 @@
     "test:coverage": "jest --config=jest.config.json --coverage",
     "test:karma": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "lint": "eslint \"lib/**/*.ts\" \"test/**/*.ts\"",
-    "prettier": "prettier --write \"{lib,test}/**/*.{js,ts}\" index.ts",
+    "format": "prettier --write \"{lib,test}/**/*.{js,ts}\" index.ts",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",
-    "@types/node": "^18.11.11",
-    "@typescript-eslint/eslint-plugin": "^5.45.1",
-    "@typescript-eslint/parser": "^5.45.1",
-    "eslint": "^8.25.0",
+    "@types/node": "^18.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
+    "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jasmine-core": "^4.5.0",
@@ -34,7 +34,7 @@
     "karma-chrome-launcher": "^3.1.1",
     "karma-jasmine": "^5.1.0",
     "karma-typescript": "^5.5.3",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.1",
     "ts-jest": "^28.0.8",
     "typescript": "4.9.4"
   },
