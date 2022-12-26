@@ -136,6 +136,67 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    it('allows preventing SimpleIntervalJob execution overrun with async task and Promise.all', async () => {
+      let counter = 0
+      let result1 = 0
+      let result2 = 0
+      let result3 = 0
+
+      const scheduler = new ToadScheduler()
+      const task = new AsyncTask('simple task', () => {
+        counter++
+        advanceTimersByTime(5000)
+        const promise1 = Promise.resolve().then(() => {
+          result1++
+          return true
+        })
+        const promise2 = Promise.resolve().then(() => {
+          result2++
+          return undefined
+        })
+        const promise3 = Promise.resolve().then(() => {
+          result3++
+          return true
+        })
+        //return Promise.resolve(undefined)
+        return Promise.all([promise1, promise2, promise3])
+      })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 2,
+        },
+        task,
+        {
+          preventOverrun: true,
+        }
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+
+      expect(counter).toBe(0)
+      advanceTimersByTime(1999)
+      await Promise.resolve() // this allows promises to play nice with mocked timers
+      expect(counter).toBe(0)
+      advanceTimersByTime(1)
+      await Promise.resolve()
+      expect(result1).toBe(1)
+      expect(result2).toBe(1)
+      expect(result3).toBe(1)
+      expect(counter).toBe(1)
+      await Promise.resolve()
+      advanceTimersByTime(999)
+      expect(counter).toBe(1)
+      await Promise.resolve()
+      await Promise.resolve()
+      advanceTimersByTime(1)
+      await Promise.resolve()
+      expect(counter).toBe(2)
+      scheduler.stop()
+      expect(result1).toBe(2)
+      expect(result2).toBe(2)
+      expect(result3).toBe(2)
+    })
+
     it('allows executing job immediately', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
