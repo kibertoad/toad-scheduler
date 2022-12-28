@@ -141,9 +141,9 @@ Here is an example:
 ```ts
 import { randomUUID } from 'crypto'
 
-import type Redis from 'ioredis'
-import { Mutex } from 'redis-semaphore'
+import type { Redis } from 'ioredis'
 import type { LockOptions } from 'redis-semaphore'
+import { Mutex } from 'redis-semaphore'
 import { AsyncTask } from 'toad-scheduler';
 
 export type BackgroundJobConfiguration = {
@@ -156,6 +156,7 @@ export type LockConfiguration = {
     lockTimeout: number
 }
 
+// Abstract Job
 export abstract class AbstractBackgroundJob {
     public readonly jobId: string
     protected readonly redis: Redis
@@ -205,6 +206,49 @@ export abstract class AbstractBackgroundJob {
     }
 }
 
+// Job example
+
+const LOCK_TIMEOUT_IN_MSECS = 60 * 1000
+const LOCK_REFRESH_IN_MSECS = 10 * 1000
+
+export class SampleJob extends AbstractBackgroundJob {
+  constructor(redis: Redis) {
+    super(
+      {
+        jobId: 'SampleJob',
+      },
+      redis,
+    )
+  }
+
+  protected async processInternal(executionUuid: string): Promise<void> {
+    // We only want a single instance of this job running in entire cluster, let's see if someone else is already processing it
+    const lock = await this.tryAcquireExclusiveLock({
+      lockTimeout: LOCK_TIMEOUT_IN_MSECS,
+      refreshInterval: LOCK_REFRESH_IN_MSECS,
+    })
+
+    // Job is already running, skip
+    if (!lock) {
+      this.logger.debug(`Job already running in another node, skipping (${executionUuid})`)
+      return
+    }
+
+    try {
+      // Process job logic here
+      await this.sampleJobLogic()
+    } finally {
+      await lock.release()
+    }
+  }
+
+  private async sampleJobLogic() {
+    // dummy processing logic
+    return Promise.resolve()
+  }
+
+
+// Job registration
 function createTask(job: AbstractBackgroundJob): AsyncTask {
     return new AsyncTask(
         job.jobId,
