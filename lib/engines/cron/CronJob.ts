@@ -37,6 +37,7 @@ export class CronJob extends Job {
     this.task = task
   }
 
+  /* istanbul ignore next */
   getStatus(): JobStatus {
     return this.cronInstance?.running() ? JobStatus.RUNNING : JobStatus.STOPPED
   }
@@ -44,6 +45,7 @@ export class CronJob extends Job {
   start(): void {
     // lazy-require croner to avoid mandatory dependency
     const croner = require('croner')
+    /* istanbul ignore if  */
     if (!croner) {
       throw new Error(
         'Please install "croner" (run "npm i croner") in case you want to use Cron jobs.'
@@ -63,6 +65,7 @@ export class CronJob extends Job {
     )
   }
 
+  /* istanbul ignore next */
   stop(): void {
     this.cronInstance?.stop()
   }

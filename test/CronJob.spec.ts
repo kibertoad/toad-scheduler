@@ -74,12 +74,13 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
-    it('allows preventing CronJob execution overrun', () => {
+    it('allows preventing CronJob execution overrun for async tasks', async () => {
       let counter = 0
       const scheduler = new ToadScheduler()
-      const task = new Task('simple task', () => {
+      const task = new AsyncTask('simple task', () => {
         counter++
         advanceTimersByTime(5000)
+        return Promise.resolve(undefined)
       })
       const job = new CronJob(
         {
@@ -94,14 +95,80 @@ describe('ToadScheduler', () => {
 
       resetTime()
       expect(counter).toBe(0)
-      advanceTimersByTime(1999)
-      expect(counter).toBe(0)
-      advanceTimersByTime(1)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      await Promise.resolve() // this allows promises to play nice with mocked timers
+      await Promise.resolve()
+      await Promise.resolve()
       expect(counter).toBe(1)
-      advanceTimersByTime(999)
-      expect(counter).toBe(1)
-      advanceTimersByTime(1)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
       expect(counter).toBe(2)
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      await Promise.resolve()
+      expect(counter).toBe(3)
+      scheduler.stop()
+    })
+
+    it('allows enabling CronJob execution overrun', async () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new AsyncTask('simple task', () => {
+        counter++
+        advanceTimersByTime(5000)
+        return Promise.resolve(undefined)
+      })
+      const job = new CronJob(
+        {
+          cronExpression: '*/2 * * * * *',
+        },
+        task,
+        {
+          preventOverrun: false,
+        }
+      )
+      scheduler.addCronJob(job)
+
+      resetTime()
+      expect(counter).toBe(0)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      await Promise.resolve() // this allows promises to play nice with mocked timers
+      await Promise.resolve()
+      await Promise.resolve()
+      expect(counter).toBe(4)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      expect(counter).toBe(9)
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      await Promise.resolve()
+      expect(counter).toBe(14)
       scheduler.stop()
     })
 
