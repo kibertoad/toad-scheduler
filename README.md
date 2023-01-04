@@ -150,6 +150,8 @@ You can use CronJob instances for handling Cron-style scheduling:
       scheduler.addCronJob(job)
 ```
 
+Note that you need to install "croner" library for this to work. Run `npm i croner` in order to install this dependency.
+
 ## Usage in clustered environments
 
 `toad-scheduler` does not persist its state by design, and has no out-of-the-box concurrency management features. In case it is necessary

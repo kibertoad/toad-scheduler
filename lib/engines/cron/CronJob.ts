@@ -2,7 +2,6 @@ import { Job, JobStatus } from '../../common/Job'
 import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
 import { JobOptions } from '../simple-interval/SimpleIntervalJob'
-import { Cron } from 'croner'
 
 export const CRON_EVERY_SECOND = '* * * * * *'
 
@@ -17,6 +16,11 @@ export const CRON_EVERY_HOUR = '0 * * * *'
 export type CronSchedule = {
   cronExpression: string
   timezone?: string
+}
+
+export type Cron = {
+  running(): boolean
+  stop(): void
 }
 
 export class CronJob extends Job {
@@ -38,7 +42,15 @@ export class CronJob extends Job {
   }
 
   start(): void {
-    this.cronInstance = Cron(
+    // lazy-require croner to avoid mandatory dependency
+    const croner = require('croner')
+    if (!croner) {
+      throw new Error(
+        'Please install "croner" (run "npm i croner") in case you want to use Cron jobs.'
+      )
+    }
+
+    this.cronInstance = croner.Cron(
       this.schedule.cronExpression,
       {
         timezone: this.schedule.timezone,
