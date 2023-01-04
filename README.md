@@ -131,6 +131,25 @@ console.log(scheduler.getById('id_2').getStatus()); // returns "stopped" and can
 
 ```
 
+## Cron support
+
+You can use CronJob instances for handling Cron-style scheduling:
+```ts
+      const task = new AsyncTask('simple task', () => {
+        // Execute your asynchronous logic here
+      })
+      const job = new CronJob(
+        {
+          cronExpression: '*/2 * * * * *',
+        },
+        task,
+        {
+          preventOverrun: true,
+        }
+      )
+      scheduler.addCronJob(job)
+```
+
 ## Usage in clustered environments
 
 `toad-scheduler` does not persist its state by design, and has no out-of-the-box concurrency management features. In case it is necessary

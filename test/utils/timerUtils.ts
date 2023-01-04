@@ -10,6 +10,23 @@ export function mockTimers() {
   }
 }
 
+export type TimeParam = {
+  hours: number
+  minutes: number
+  seconds: number
+}
+
+export function setSystemTime(time: TimeParam) {
+  const date = new Date(2020, 3, 1, time.hours, time.minutes, time.seconds)
+
+  if (isJest) {
+    jest.setSystemTime(date)
+  }
+  if (isJasmine) {
+    jasmine.clock().mockDate(date)
+  }
+}
+
 export function unMockTimers() {
   if (isJest) {
     jest.useRealTimers()
