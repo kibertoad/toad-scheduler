@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/kibertoad/toad-scheduler/workflows/ci/badge.svg)](https://github.com/kibertoad/toad-scheduler/actions)
 [![Coverage Status](https://coveralls.io/repos/kibertoad/toad-scheduler/badge.svg?branch=main)](https://coveralls.io/r/kibertoad/toad-scheduler?branch=main)
 
-In-memory TypeScript job scheduler that repeatedly executes given tasks within specified intervals of time (e. g. "each 20 seconds").
+In-memory TypeScript job scheduler that repeatedly executes given tasks within specified intervals of time (e. g. "each 20 seconds"). Cron syntax is also supported in case you need it.
 
 Node.js 12+ and modern browsers are supported
 
