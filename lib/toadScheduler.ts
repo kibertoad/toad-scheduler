@@ -2,9 +2,12 @@ import { SimpleIntervalEngine } from './engines/simple-interval/SimpleIntervalEn
 import { SimpleIntervalJob } from './engines/simple-interval/SimpleIntervalJob'
 import { Job } from './common/Job'
 import { LongIntervalJob } from './engines/simple-interval/LongIntervalJob'
+import { CronJob } from './engines/cron/CronJob'
+import { CronJobEngine } from './engines/cron/CronJobEngine'
 
 type EngineRegistry = {
   simpleIntervalEngine?: SimpleIntervalEngine
+  cronJobEngine?: CronJobEngine
 }
 
 export class ToadScheduler {
@@ -21,13 +24,7 @@ export class ToadScheduler {
       this.engines.simpleIntervalEngine = new SimpleIntervalEngine()
     }
 
-    if (job.id) {
-      if (this.jobRegistry[job.id]) {
-        throw new Error(`Job with an id ${job.id} is already registered.`)
-      }
-      this.jobRegistry[job.id] = job
-    }
-
+    this.registerJob(job)
     this.engines.simpleIntervalEngine.add(job)
   }
 
@@ -37,6 +34,24 @@ export class ToadScheduler {
 
   addSimpleIntervalJob(job: SimpleIntervalJob): void {
     return this.addIntervalJob(job)
+  }
+
+  private registerJob(job: Job): void {
+    if (job.id) {
+      if (this.jobRegistry[job.id]) {
+        throw new Error(`Job with an id ${job.id} is already registered.`)
+      }
+      this.jobRegistry[job.id] = job
+    }
+  }
+
+  addCronJob(job: CronJob): void {
+    if (!this.engines.cronJobEngine) {
+      this.engines.cronJobEngine = new CronJobEngine()
+    }
+
+    this.registerJob(job)
+    this.engines.cronJobEngine.add(job)
   }
 
   stop(): void {
