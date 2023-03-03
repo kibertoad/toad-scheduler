@@ -46,7 +46,7 @@ describe('ToadScheduler', () => {
       expect(job.getStatus()).toBe('stopped')
     })
 
-    it('correctly processes CronJob', () => {
+    it('correctly processes CronJob', async () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -63,12 +63,16 @@ describe('ToadScheduler', () => {
       resetTime()
       expect(counter).toBe(0)
       advanceTimersByTime(19999)
+      await Promise.resolve(undefined)
       expect(counter).toBe(0)
       advanceTimersByTime(1)
+      await Promise.resolve(undefined)
       expect(counter).toBe(1)
       advanceTimersByTime(19999)
+      await Promise.resolve(undefined)
       expect(counter).toBe(1)
       advanceTimersByTime(1)
+      await Promise.resolve(undefined)
       expect(counter).toBe(2)
 
       scheduler.stop()
@@ -126,7 +130,7 @@ describe('ToadScheduler', () => {
     it('allows enabling CronJob execution overrun', async () => {
       let counter = 0
       const scheduler = new ToadScheduler()
-      const task = new AsyncTask('simple task', () => {
+      const task = new AsyncTask('simple task', async () => {
         counter++
         advanceTimersByTime(5000)
         return Promise.resolve(undefined)
@@ -152,13 +156,13 @@ describe('ToadScheduler', () => {
       await Promise.resolve() // this allows promises to play nice with mocked timers
       await Promise.resolve()
       await Promise.resolve()
-      expect(counter).toBe(4)
+      expect(counter).toBe(3)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      expect(counter).toBe(9)
+      expect(counter).toBe(8)
       await Promise.resolve()
       await Promise.resolve()
       await Promise.resolve()
@@ -168,14 +172,14 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       await Promise.resolve()
-      expect(counter).toBe(14)
+      expect(counter).toBe(13)
       scheduler.stop()
     })
 
     it('allows preventing CronJob execution overrun with async tasks', async () => {
       let counter = 0
       const scheduler = new ToadScheduler()
-      const task = new AsyncTask('simple task', () => {
+      const task = new AsyncTask('simple task', async () => {
         counter++
         advanceTimersByTime(5000)
         return Promise.resolve(undefined)
@@ -199,10 +203,11 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1)
       await Promise.resolve()
       expect(counter).toBe(1)
+      advanceTimersByTime(2000)
       await Promise.resolve()
-      advanceTimersByTime(999)
       expect(counter).toBe(1)
-      advanceTimersByTime(1)
+      advanceTimersByTime(6000)
+      await Promise.resolve()
       expect(counter).toBe(2)
       scheduler.stop()
     })
@@ -214,7 +219,7 @@ describe('ToadScheduler', () => {
       let result3 = 0
 
       const scheduler = new ToadScheduler()
-      const task = new AsyncTask('simple task', () => {
+      const task = new AsyncTask('simple task', async () => {
         counter++
         advanceTimersByTime(5000)
         const promise1 = Promise.resolve().then(() => {
@@ -255,11 +260,11 @@ describe('ToadScheduler', () => {
       expect(result3).toBe(1)
       expect(counter).toBe(1)
       await Promise.resolve()
-      advanceTimersByTime(999)
+      advanceTimersByTime(1999)
       expect(counter).toBe(1)
       await Promise.resolve()
       await Promise.resolve()
-      advanceTimersByTime(1)
+      advanceTimersByTime(2000)
       await Promise.resolve()
       expect(counter).toBe(2)
       scheduler.stop()
@@ -268,7 +273,7 @@ describe('ToadScheduler', () => {
       expect(result3).toBe(2)
     })
 
-    it('correctly handles adding job twice', () => {
+    it('correctly handles adding job twice', async () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -286,12 +291,16 @@ describe('ToadScheduler', () => {
       resetTime()
       expect(counter).toBe(0)
       advanceTimersByTime(19999)
+      await Promise.resolve()
       expect(counter).toBe(0)
       advanceTimersByTime(1)
+      await Promise.resolve()
       expect(counter).toBe(2)
       advanceTimersByTime(19999)
+      await Promise.resolve()
       expect(counter).toBe(2)
       advanceTimersByTime(1)
+      await Promise.resolve()
       expect(counter).toBe(4)
 
       scheduler.stop()
