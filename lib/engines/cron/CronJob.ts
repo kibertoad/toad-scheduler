@@ -19,7 +19,7 @@ export type CronSchedule = {
 }
 
 export type Cron = {
-  running(): boolean
+  isRunning(): boolean
   stop(): void
 }
 
@@ -39,7 +39,7 @@ export class CronJob extends Job {
 
   /* istanbul ignore next */
   getStatus(): JobStatus {
-    return this.cronInstance?.running() ? JobStatus.RUNNING : JobStatus.STOPPED
+    return this.cronInstance?.isRunning() ? JobStatus.RUNNING : JobStatus.STOPPED
   }
 
   start(): void {
@@ -56,12 +56,9 @@ export class CronJob extends Job {
       this.schedule.cronExpression,
       {
         timezone: this.schedule.timezone,
+        protect: this.preventOverrun
       },
-      () => {
-        if (!this.task.isExecuting || !this.preventOverrun) {
-          this.task.execute()
-        }
-      }
+      async () => await this.task.execute()
     )
   }
 

@@ -150,7 +150,7 @@ You can use CronJob instances for handling Cron-style scheduling:
       scheduler.addCronJob(job)
 ```
 
-Note that you need to install "croner" library for this to work. Run `npm i croner` in order to install this dependency.
+Note that you need to install "croner" library for this to work. Run `npm i croner@6` in order to install this dependency.
 
 ## Usage in clustered environments
 
