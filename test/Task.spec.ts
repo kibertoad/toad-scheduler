@@ -78,5 +78,41 @@ describe('ToadScheduler', () => {
         done()
       })
     })
+
+    it('correctly provide taskid', (done) => {
+      unMockTimers()
+      expectAssertions(1)
+
+      const scheduler = new ToadScheduler()
+      const task = new Task(
+        'task',
+        (taskId) => {
+          expect(taskId).toBe('task')
+        },
+        () => {
+          return Promise.resolve()
+            .then(() => {
+              return 'dummy'
+            })
+            .then(() => {
+              throw new Error('Error while handling an error')
+            })
+        }
+      )
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 1,
+          runImmediately: true,
+        },
+        task
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+
+      sleep(5).then(() => {
+        scheduler.stop()
+        done()
+      })
+    })
   })
 })

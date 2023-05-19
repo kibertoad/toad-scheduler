@@ -4,10 +4,10 @@ import { isPromise } from './Utils'
 export class Task {
   public isExecuting: boolean
   private readonly id: string
-  private readonly handler: () => void
+  private readonly handler: (taskId?: string) => void
   private readonly errorHandler: (err: Error) => void | Promise<void>
 
-  constructor(id: string, handler: () => void, errorHandler?: (err: Error) => void) {
+  constructor(id: string, handler: (taskId?: string) => void, errorHandler?: (err: Error) => void) {
     this.id = id
     this.handler = handler
     this.errorHandler = errorHandler || defaultErrorHandler(this.id)
@@ -17,7 +17,7 @@ export class Task {
   execute(): void {
     this.isExecuting = true
     try {
-      this.handler()
+      this.handler(this.id)
     } catch (err: any) {
       const errorHandleResult = this.errorHandler(err)
       if (isPromise(errorHandleResult)) {
