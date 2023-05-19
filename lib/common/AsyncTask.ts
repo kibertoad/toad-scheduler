@@ -7,11 +7,7 @@ export class AsyncTask {
   private readonly handler: (taskId?: string) => Promise<unknown>
   private readonly errorHandler: (err: Error) => void | Promise<void>
 
-  constructor(
-    id: string,
-    handler: (taskId?: string) => Promise<unknown>,
-    errorHandler?: (err: Error) => void
-  ) {
+  constructor(id: string, handler: (taskId?: string) => Promise<unknown>, errorHandler?: (err: Error) => void) {
     this.id = id
     this.handler = handler
     this.errorHandler = errorHandler || defaultErrorHandler(this.id)
