@@ -54,7 +54,7 @@ export class LongIntervalJob extends Job {
           },
           new Task('Final mile task', () => {
             this.setTimeEatingJob(toMsecs(this.schedule))
-            return this.task.execute()
+            return this.task.execute(this.id)
           })
         )
         this.childJob.start()
@@ -83,12 +83,12 @@ export class LongIntervalJob extends Job {
     }
 
     if (this.schedule.runImmediately) {
-      this.task.execute()
+      this.task.execute(this.id)
     }
 
     this.timer = setInterval(() => {
       if (!this.task.isExecuting || !this.preventOverrun) {
-        this.task.execute()
+        this.task.execute(this.id)
       }
     }, time)
   }

@@ -59,7 +59,7 @@ export class CronJob extends Job {
       },
       () => {
         if (!this.task.isExecuting || !this.preventOverrun) {
-          this.task.execute()
+          this.task.execute(this.id)
         }
       }
     )
