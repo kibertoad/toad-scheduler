@@ -1,5 +1,5 @@
 {
-  "name": "toad-scheduler",
+  "name": "@extendapps/toad-scheduler",
   "version": "2.2.0",
   "license": "MIT",
   "description": "In-memory Node.js and browser job scheduler",
