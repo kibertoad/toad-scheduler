@@ -37,12 +37,12 @@ export class SimpleIntervalJob extends Job {
     }
 
     if (this.schedule.runImmediately) {
-      this.task.execute()
+      this.task.execute(this.id)
     }
 
     this.timer = setInterval(() => {
       if (!this.task.isExecuting || !this.preventOverrun) {
-        this.task.execute()
+        this.task.execute(this.id)
       }
     }, time)
   }
