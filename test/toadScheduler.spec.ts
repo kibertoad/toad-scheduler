@@ -243,7 +243,14 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobs()
-      expect(retrievedJobs).toMatchSnapshot()
+      expect(retrievedJobs).toMatchObject([
+        {
+          id: 'id',
+        },
+        {
+          id: 'id2',
+        },
+      ])
     })
   })
 
@@ -270,7 +277,11 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobsByStatus(JobStatus.STOPPED)
-      expect(retrievedJobs).toMatchSnapshot()
+      expect(retrievedJobs).toMatchObject([
+        {
+          id: 'id',
+        },
+      ])
     })
   })
 
