@@ -4,6 +4,7 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { JobStatus } from '../lib/common/Job'
+import { expectToMatchObject } from './utils/assertUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -243,7 +244,7 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobs()
-      expect(retrievedJobs).toMatchObject([
+      expectToMatchObject(retrievedJobs, [
         {
           id: 'id',
         },
@@ -277,7 +278,7 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobsByStatus(JobStatus.STOPPED)
-      expect(retrievedJobs).toMatchObject([
+      expectToMatchObject(retrievedJobs, [
         {
           id: 'id',
         },
