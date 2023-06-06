@@ -3,6 +3,8 @@ import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleInterval
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
+import { JobStatus } from '../lib/common/Job'
+import { expectToMatchObject } from './utils/assertUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -216,6 +218,71 @@ describe('ToadScheduler', () => {
       expect(counter2).toBe(1)
 
       scheduler.stop()
+    })
+  })
+
+  describe('listJobs', () => {
+    it('returns all jobs', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id' }
+      )
+      const job2 = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id2' }
+      )
+      scheduler.addSimpleIntervalJob(job)
+      scheduler.addSimpleIntervalJob(job2)
+      job.stop()
+
+      const retrievedJobs = scheduler.getAllJobs()
+      expectToMatchObject(retrievedJobs, [
+        {
+          id: 'id',
+        },
+        {
+          id: 'id2',
+        },
+      ])
+    })
+  })
+
+  describe('listJobs', () => {
+    it('returns jobs filtered by status', () => {
+      const scheduler = new ToadScheduler()
+      const task = new NoopTask()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id' }
+      )
+      const job2 = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        task,
+        { id: 'id2' }
+      )
+      scheduler.addSimpleIntervalJob(job)
+      scheduler.addSimpleIntervalJob(job2)
+      job.stop()
+
+      const retrievedJobs = scheduler.getAllJobsByStatus(JobStatus.STOPPED)
+      expectToMatchObject(retrievedJobs, [
+        {
+          id: 'id',
+        },
+      ])
     })
   })
 

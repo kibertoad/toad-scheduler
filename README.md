@@ -160,7 +160,7 @@ to prevent parallel execution of jobs in clustered environment, it is highly rec
 Here is an example:
 
 ```ts
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 import type { Redis } from 'ioredis'
 import type { LockOptions } from 'redis-semaphore'
@@ -303,6 +303,8 @@ function createTask(job: AbstractBackgroundJob): AsyncTask {
 * `stop(): void` - stops all jobs, registered in the scheduler;
 * `getById(id: string): Job` - returns the job with a given id.
 * `existsById(id: string): boolean` - returns true if job with given id exists, false otherwise.
+* `getAllJobs(): Job[]` - returns all registered jobs.
+* `getAllJobsByStatus(status: JobStatus): Job[]` - returns all registered jobs with a given status.
 * `stopById(id: string): void` - stops the job with a given id.
 * `removeById(id: string): Job | undefined` - stops the job with a given id and removes it from the scheduler. If no such job exists, returns `undefined`, otherwise returns the job.
 * `startById(id: string): void` - starts, or restarts (if it's already running) the job with a given id.
