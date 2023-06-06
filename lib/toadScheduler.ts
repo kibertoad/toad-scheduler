@@ -1,6 +1,6 @@
 import { SimpleIntervalEngine } from './engines/simple-interval/SimpleIntervalEngine'
 import { SimpleIntervalJob } from './engines/simple-interval/SimpleIntervalJob'
-import { Job } from './common/Job'
+import { Job, JobStatus } from './common/Job'
 import { LongIntervalJob } from './engines/simple-interval/LongIntervalJob'
 import { CronJob } from './engines/cron/CronJob'
 import { CronJobEngine } from './engines/cron/CronJobEngine'
@@ -95,5 +95,15 @@ export class ToadScheduler {
   startById(id: string): void {
     const job = this.getById(id)
     job.start()
+  }
+
+  getAllJobs(): Job[] {
+    return Object.values(this.jobRegistry)
+  }
+
+  getAllJobsByStatus(status: JobStatus): Job[] {
+    return Object.values(this.jobRegistry).filter((value) => {
+      return value.getStatus() === status
+    })
   }
 }

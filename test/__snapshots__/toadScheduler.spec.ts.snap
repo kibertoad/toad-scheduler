@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToadScheduler listJobs returns all jobs 1`] = `
+Array [
+  SimpleIntervalJob {
+    "id": "id",
+    "preventOverrun": true,
+    "schedule": Object {
+      "seconds": 20,
+    },
+    "task": NoopTask {
+      "errorHandler": [Function],
+      "handler": [Function],
+      "id": "dummy",
+      "isExecuting": false,
+    },
+    "timer": undefined,
+  },
+  SimpleIntervalJob {
+    "id": "id2",
+    "preventOverrun": true,
+    "schedule": Object {
+      "seconds": 20,
+    },
+    "task": NoopTask {
+      "errorHandler": [Function],
+      "handler": [Function],
+      "id": "dummy",
+      "isExecuting": false,
+    },
+    "timer": Object {
+      "hasRef": [Function],
+      "ref": [Function],
+      "refed": true,
+      "refresh": [Function],
+      "unref": [Function],
+      Symbol(Symbol.toPrimitive): [Function],
+    },
+  },
+]
+`;
+
+exports[`ToadScheduler listJobs returns jobs filtered by status 1`] = `
+Array [
+  SimpleIntervalJob {
+    "id": "id",
+    "preventOverrun": true,
+    "schedule": Object {
+      "seconds": 20,
+    },
+    "task": NoopTask {
+      "errorHandler": [Function],
+      "handler": [Function],
+      "id": "dummy",
+      "isExecuting": false,
+    },
+    "timer": undefined,
+  },
+]
+`;
