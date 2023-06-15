@@ -44,9 +44,11 @@ export class CronJob extends Job {
 
   start(): void {
     // lazy-require croner to avoid mandatory dependency
-    const croner = require('croner')
-    /* istanbul ignore if  */
-    if (!croner) {
+    let croner
+    try {
+      croner = require('croner')
+    } catch (err) {
+      /* istanbul ignore next */
       throw new Error(
         'Please install "croner" (run "npm i croner") in case you want to use Cron jobs.'
       )
