@@ -6,12 +6,13 @@ import { AsyncTask } from '../lib/common/AsyncTask'
 import { CRON_EVERY_MINUTE, CRON_EVERY_SECOND, CronJob } from '../lib/engines/cron/CronJob'
 
 function resetTime() {
-  setSystemTime({ hours: 1, minutes: 1, seconds: 0 })
+  setSystemTime({ hours: 1, minutes: 0, seconds: 0 })
 }
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
     mockTimers()
+    resetTime()
   })
 
   afterEach(() => {
@@ -79,7 +80,7 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('simple task', () => {
         counter++
-        advanceTimersByTime(5000)
+        advanceTimersByTime(6000)
         return Promise.resolve(undefined)
       })
       const job = new CronJob(
@@ -93,33 +94,25 @@ describe('ToadScheduler', () => {
       )
       scheduler.addCronJob(job)
 
-      resetTime()
       expect(counter).toBe(0)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      await Promise.resolve() // this allows promises to play nice with mocked timers
-      await Promise.resolve()
-      await Promise.resolve()
-      expect(counter).toBe(1)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
       expect(counter).toBe(2)
-      await Promise.resolve()
-      await Promise.resolve()
-      await Promise.resolve()
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      await Promise.resolve()
-      expect(counter).toBe(3)
+      expect(counter).toBe(5)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      advanceTimersByTime(1000)
+      expect(counter).toBe(7)
       scheduler.stop()
     })
 
@@ -128,12 +121,12 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('simple task', () => {
         counter++
-        advanceTimersByTime(5000)
+        advanceTimersByTime(6000)
         return Promise.resolve(undefined)
       })
       const job = new CronJob(
         {
-          cronExpression: '*/2 * * * * *',
+          cronExpression: '*/2 * * * * *', // every two seconds
         },
         task,
         {
@@ -149,26 +142,19 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      await Promise.resolve() // this allows promises to play nice with mocked timers
-      await Promise.resolve()
-      await Promise.resolve()
-      expect(counter).toBe(4)
+      expect(counter).toBe(2)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      expect(counter).toBe(9)
-      await Promise.resolve()
-      await Promise.resolve()
-      await Promise.resolve()
+      expect(counter).toBe(5)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
       advanceTimersByTime(1000)
-      await Promise.resolve()
-      expect(counter).toBe(14)
+      expect(counter).toBe(7)
       scheduler.stop()
     })
 
@@ -177,7 +163,7 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('simple task', () => {
         counter++
-        advanceTimersByTime(5000)
+        advanceTimersByTime(6000)
         return Promise.resolve(undefined)
       })
       const job = new CronJob(
@@ -200,14 +186,14 @@ describe('ToadScheduler', () => {
       await Promise.resolve()
       expect(counter).toBe(1)
       await Promise.resolve()
-      advanceTimersByTime(999)
+      advanceTimersByTime(1999)
       expect(counter).toBe(1)
       advanceTimersByTime(1)
       expect(counter).toBe(2)
       scheduler.stop()
     })
 
-    it('allows preventing SimpleIntervalJob execution overrun with async task and Promise.all', async () => {
+    it('allows preventing CronJob execution overrun with async task and Promise.all', async () => {
       let counter = 0
       let result1 = 0
       let result2 = 0
@@ -216,7 +202,7 @@ describe('ToadScheduler', () => {
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('simple task', () => {
         counter++
-        advanceTimersByTime(5000)
+        advanceTimersByTime(6000)
         const promise1 = Promise.resolve().then(() => {
           result1++
           return true
@@ -255,7 +241,7 @@ describe('ToadScheduler', () => {
       expect(result3).toBe(1)
       expect(counter).toBe(1)
       await Promise.resolve()
-      advanceTimersByTime(999)
+      advanceTimersByTime(1999)
       expect(counter).toBe(1)
       await Promise.resolve()
       await Promise.resolve()
