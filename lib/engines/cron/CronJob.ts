@@ -19,7 +19,7 @@ export type CronSchedule = {
 }
 
 export type Cron = {
-  running(): boolean
+  isRunning(): boolean
   stop(): void
 }
 
@@ -32,14 +32,14 @@ export class CronJob extends Job {
 
   constructor(schedule: CronSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
-    this.preventOverrun = options.preventOverrun ?? true
+    this.preventOverrun = false
     this.schedule = schedule
     this.task = task
   }
 
   /* istanbul ignore next */
   getStatus(): JobStatus {
-    return this.cronInstance?.running() ? JobStatus.RUNNING : JobStatus.STOPPED
+    return this.cronInstance?.isRunning() ? JobStatus.RUNNING : JobStatus.STOPPED
   }
 
   start(): void {
