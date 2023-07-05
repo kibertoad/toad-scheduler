@@ -36,7 +36,7 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^5.1.0",
     "karma-typescript": "^5.5.4",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.1.3"
   },
