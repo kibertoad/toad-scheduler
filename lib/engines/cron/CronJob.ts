@@ -32,7 +32,7 @@ export class CronJob extends Job {
 
   constructor(schedule: CronSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
-    this.preventOverrun = false
+    this.preventOverrun = options.preventOverrun || false
     this.schedule = schedule
     this.task = task
   }
@@ -57,6 +57,7 @@ export class CronJob extends Job {
     this.cronInstance = croner.Cron(
       this.schedule.cronExpression,
       {
+        protect: this.preventOverrun,
         timezone: this.schedule.timezone,
       },
       () => {
