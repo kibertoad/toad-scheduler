@@ -303,7 +303,7 @@ function createTask(job: AbstractBackgroundJob): AsyncTask {
 * `stop(): void` - stops all jobs, registered in the scheduler;
 * `getById(id: string): Job` - returns the job with a given id.
 * `existsById(id: string): boolean` - returns true if job with given id exists, false otherwise.
-* `getAllJobs(): Job[]` - returns all registered jobs.
+* `getAllJobs(): Job[]` - returns all registered jobs (only jobs with an id are in the registry).
 * `getAllJobsByStatus(status: JobStatus): Job[]` - returns all registered jobs with a given status.
 * `stopById(id: string): void` - stops the job with a given id.
 * `removeById(id: string): Job | undefined` - stops the job with a given id and removes it from the scheduler. If no such job exists, returns `undefined`, otherwise returns the job.
