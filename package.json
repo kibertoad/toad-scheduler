@@ -1,6 +1,6 @@
 {
   "name": "toad-scheduler",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "description": "In-memory Node.js and browser job scheduler",
   "maintainers": [
