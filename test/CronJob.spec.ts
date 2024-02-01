@@ -5,6 +5,12 @@ import { advanceTimersByTime, mockTimers, setSystemTime, unMockTimers } from './
 import { AsyncTask } from '../lib/common/AsyncTask'
 import { CRON_EVERY_MINUTE, CRON_EVERY_SECOND, CronJob } from '../lib/engines/cron/CronJob'
 
+function wait(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 function resetTime() {
   setSystemTime({ hours: 1, minutes: 0, seconds: 0 })
 }
@@ -27,7 +33,7 @@ describe('ToadScheduler', () => {
         {
           cronExpression: CRON_EVERY_SECOND,
         },
-        task
+        task,
       )
       scheduler.addCronJob(job)
       expect(job.getStatus()).toBe('running')
@@ -40,7 +46,7 @@ describe('ToadScheduler', () => {
         {
           cronExpression: CRON_EVERY_MINUTE,
         },
-        task
+        task,
       )
       scheduler.addCronJob(job)
       scheduler.stop()
@@ -57,7 +63,7 @@ describe('ToadScheduler', () => {
         {
           cronExpression: '*/20 * * * * *',
         },
-        task
+        task,
       )
       scheduler.addCronJob(job)
 
@@ -76,45 +82,41 @@ describe('ToadScheduler', () => {
     })
 
     it('allows preventing CronJob execution overrun for async tasks', async () => {
+      unMockTimers()
+
       let counter = 0
       const scheduler = new ToadScheduler()
-      const task = new AsyncTask('simple task', () => {
+      const task = new AsyncTask('simple task', async () => {
         counter++
-        advanceTimersByTime(6000)
-        return Promise.resolve(undefined)
+        await wait(2000)
       })
+
       const job = new CronJob(
         {
-          cronExpression: '*/2 * * * * *',
+          cronExpression: '*/1 * * * * *',
         },
         task,
         {
           preventOverrun: true,
-        }
+        },
       )
       scheduler.addCronJob(job)
 
       expect(counter).toBe(0)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
+      await Promise.resolve()
+      await wait(1400)
+      await Promise.resolve()
+      expect(counter).toBe(1)
+      await Promise.resolve()
+      await wait(2800)
+      await Promise.resolve()
       expect(counter).toBe(2)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      expect(counter).toBe(5)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      advanceTimersByTime(1000)
-      expect(counter).toBe(7)
+      await Promise.resolve()
+      await wait(2800)
+      await Promise.resolve()
+      expect(counter).toBe(3)
       scheduler.stop()
-    })
+    }, 20000)
 
     it('allows enabling CronJob execution overrun', async () => {
       let counter = 0
@@ -131,7 +133,7 @@ describe('ToadScheduler', () => {
         task,
         {
           preventOverrun: false,
-        }
+        },
       )
       scheduler.addCronJob(job)
 
@@ -173,7 +175,7 @@ describe('ToadScheduler', () => {
         task,
         {
           preventOverrun: true,
-        }
+        },
       )
       scheduler.addCronJob(job)
 
@@ -225,7 +227,7 @@ describe('ToadScheduler', () => {
         task,
         {
           preventOverrun: true,
-        }
+        },
       )
       scheduler.addCronJob(job)
 
@@ -264,7 +266,7 @@ describe('ToadScheduler', () => {
         {
           cronExpression: '*/20 * * * * *',
         },
-        task
+        task,
       )
       scheduler.addCronJob(job)
       scheduler.addCronJob(job)
@@ -293,7 +295,7 @@ describe('ToadScheduler', () => {
         {
           cronExpression: '*/20 * * * * *',
         },
-        task
+        task,
       )
 
       scheduler.addCronJob(job)

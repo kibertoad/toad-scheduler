@@ -27,14 +27,14 @@ describe('ToadScheduler', () => {
         },
         (err: Error) => {
           error = err.message
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -68,14 +68,14 @@ describe('ToadScheduler', () => {
         },
         (err: Error) => {
           error = err.message
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -107,14 +107,14 @@ describe('ToadScheduler', () => {
             error = err.message
             throw new Error('error while handling error')
           })
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -139,13 +139,13 @@ describe('ToadScheduler', () => {
         },
         (err: Error) => {
           error = err.message
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -169,13 +169,13 @@ describe('ToadScheduler', () => {
             return Promise.reject(new Error('kaboom2'))
           })
         },
-        () => {}
+        () => {},
       )
       const job = new SimpleIntervalJob(
         {
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -198,7 +198,7 @@ describe('ToadScheduler', () => {
           Promise.resolve()
           return Promise.reject(new Error('kaboom2'))
         },
-        () => {}
+        () => {},
       )
       const job = new SimpleIntervalJob(
         {
@@ -207,7 +207,7 @@ describe('ToadScheduler', () => {
         task,
         {
           id: 'jobId',
-        }
+        },
       )
 
       scheduler.addSimpleIntervalJob(job)

@@ -42,7 +42,7 @@ export class LongIntervalJob extends Job {
           {
             milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, remainingMs),
           },
-          timeEater
+          timeEater,
         )
         this.childJob.start()
       } else {
@@ -55,7 +55,7 @@ export class LongIntervalJob extends Job {
           new Task('Final mile task', () => {
             this.setTimeEatingJob(toMsecs(this.schedule))
             return this.task.execute(this.id)
-          })
+          }),
         )
         this.childJob.start()
       }
@@ -66,7 +66,7 @@ export class LongIntervalJob extends Job {
       {
         milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, startingRemainingMs),
       },
-      timeEater
+      timeEater,
     )
     this.childJob.start()
   }
