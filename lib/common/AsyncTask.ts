@@ -10,7 +10,7 @@ export class AsyncTask {
   constructor(
     id: string,
     handler: (taskId?: string, jobId?: string) => Promise<unknown>,
-    errorHandler?: (err: Error) => void
+    errorHandler?: (err: Error) => void,
   ) {
     this.id = id
     this.handler = handler

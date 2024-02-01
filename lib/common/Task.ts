@@ -10,7 +10,7 @@ export class Task {
   constructor(
     id: string,
     handler: (taskId?: string, jobId?: string) => void,
-    errorHandler?: (err: Error) => void
+    errorHandler?: (err: Error) => void,
   ) {
     this.id = id
     this.handler = handler
