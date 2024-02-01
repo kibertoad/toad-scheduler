@@ -2,6 +2,7 @@ import { Job, JobStatus } from '../../common/Job'
 import { Task } from '../../common/Task'
 import { AsyncTask } from '../../common/AsyncTask'
 import { JobOptions } from '../simple-interval/SimpleIntervalJob'
+import { Cron } from 'croner'
 
 export const CRON_EVERY_SECOND = '* * * * * *'
 
@@ -18,11 +19,6 @@ export type CronSchedule = {
   timezone?: string
 }
 
-export type Cron = {
-  isRunning(): boolean
-  stop(): void
-}
-
 export class CronJob extends Job {
   private readonly schedule: CronSchedule
   private readonly task: Task | AsyncTask
@@ -32,7 +28,7 @@ export class CronJob extends Job {
 
   constructor(schedule: CronSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
-    this.preventOverrun = false
+    this.preventOverrun = options.preventOverrun || false
     this.schedule = schedule
     this.task = task
   }
@@ -43,27 +39,17 @@ export class CronJob extends Job {
   }
 
   start(): void {
-    // lazy-require croner to avoid mandatory dependency
-    let croner
-    try {
-      croner = require('croner')
-    } catch (err) {
-      /* istanbul ignore next */
-      throw new Error(
-        'Please install "croner" (run "npm i croner") in case you want to use Cron jobs.'
-      )
-    }
-
-    this.cronInstance = croner.Cron(
+    this.cronInstance = Cron(
       this.schedule.cronExpression,
       {
         timezone: this.schedule.timezone,
+        protect: false,
       },
       () => {
         if (!this.task.isExecuting || !this.preventOverrun) {
           this.task.execute(this.id)
         }
-      }
+      },
     )
   }
 

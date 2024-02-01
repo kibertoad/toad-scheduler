@@ -24,7 +24,7 @@ describe('ToadScheduler', () => {
         {
           seconds: 20,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
       expect(job.getStatus()).toBe('running')
@@ -37,7 +37,7 @@ describe('ToadScheduler', () => {
         {
           seconds: 20,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
       scheduler.stop()
@@ -54,7 +54,7 @@ describe('ToadScheduler', () => {
         {
           seconds: 20,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -86,7 +86,7 @@ describe('ToadScheduler', () => {
         task,
         {
           preventOverrun: true,
-        }
+        },
       )
 
       scheduler.addLongIntervalJob(job)
@@ -114,7 +114,7 @@ describe('ToadScheduler', () => {
           hours: 33,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       expect(counter).toBe(0)
@@ -133,7 +133,7 @@ describe('ToadScheduler', () => {
         {
           milliseconds: 33,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -157,7 +157,7 @@ describe('ToadScheduler', () => {
         {
           milliseconds: 10,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -180,7 +180,7 @@ describe('ToadScheduler', () => {
         {
           milliseconds: 10,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -206,7 +206,7 @@ describe('ToadScheduler', () => {
         {
           minutes: 5,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -230,7 +230,7 @@ describe('ToadScheduler', () => {
         {
           hours: 1,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -254,7 +254,7 @@ describe('ToadScheduler', () => {
         {
           days: 1,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)
@@ -283,7 +283,7 @@ describe('ToadScheduler', () => {
         {
           days: 25,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
 
@@ -308,7 +308,7 @@ describe('ToadScheduler', () => {
         {
           days: 25,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
       expect(job.getStatus()).toEqual('running')
@@ -332,7 +332,7 @@ describe('ToadScheduler', () => {
         {
           days: 25,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
 
@@ -369,7 +369,7 @@ describe('ToadScheduler', () => {
         {
           days: 55,
         },
-        task
+        task,
       )
       scheduler.addLongIntervalJob(job)
 
@@ -401,7 +401,7 @@ describe('ToadScheduler', () => {
           seconds: 4,
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addLongIntervalJob(job)

@@ -22,14 +22,14 @@ describe('ToadScheduler', () => {
         },
         (err: Error) => {
           error = err.message
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -60,14 +60,14 @@ describe('ToadScheduler', () => {
               error = err.message
               throw new Error('Error while handling an error')
             })
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -97,14 +97,14 @@ describe('ToadScheduler', () => {
             .then(() => {
               throw new Error('Error while handling an error')
             })
-        }
+        },
       )
       const job = new SimpleIntervalJob(
         {
           seconds: 1,
           runImmediately: true,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)

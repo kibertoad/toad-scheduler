@@ -36,7 +36,7 @@ describe('Rejection handling', () => {
         {
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -66,7 +66,7 @@ describe('Rejection handling', () => {
         {
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
@@ -94,7 +94,7 @@ describe('Rejection handling', () => {
         {
           milliseconds: 5,
         },
-        task
+        task,
       )
 
       scheduler.addSimpleIntervalJob(job)
