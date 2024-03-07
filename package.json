@@ -38,7 +38,7 @@
     "karma-typescript": "^5.5.4",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.2",
-    "typescript": "5.2.2"
+    "typescript": "5.4.2"
   },
   "homepage": "https://github.com/kibertoad/toad-scheduler",
   "repository": {
