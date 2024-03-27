@@ -140,7 +140,7 @@ You can use CronJob instances for handling Cron-style scheduling:
       })
       const job = new CronJob(
         {
-          cronExpression: '*/2 * * * * *',
+          cronExpression: '*/2 * * * *',
         },
         task,
         {
