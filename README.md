@@ -294,6 +294,8 @@ function createTask(job: AbstractBackgroundJob): AsyncTask {
 * `start(): void` - starts, or restarts (if it's already running) the job;
 * `stop(): void` - stops the job. Can be restarted again with `start` command;
 * `getStatus(): JobStatus` - returns the status of the job, which is one of: `running`, `stopped`.
+* `executeAsync: Promise<void>` - executes the job task once and awaits its completion. Next scheduled execution will still be executed on schedule. Respects the "preventOverrun" check.
+* `static createAndExecute(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}): Promise<SimpleIntervalJob>` - creates and immediately executes the job, resolving only after execution has completed.
 
 ## API for scheduler
 
