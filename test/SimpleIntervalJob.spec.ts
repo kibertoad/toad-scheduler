@@ -426,12 +426,13 @@ describe('ToadScheduler', () => {
         return Promise.resolve(undefined)
       })
 
-      await SimpleIntervalJob.createAndExecute({
+      const job = await SimpleIntervalJob.createAndExecute({
         days: 2,
         runImmediately: true,
       }, task)
 
       expect(counter).toBe(1)
+      job.stop()
     })
 
     it('respects preventOverrun when using executeAsync with AsyncTask', async () => {
@@ -454,6 +455,7 @@ describe('ToadScheduler', () => {
       await Promise.all([promise1, promise2])
 
       expect(counter).toBe(1)
+      job.stop()
     })
 
     it('awaits until runImmediately completes when using createAndExecute with Task', async () => {
@@ -465,12 +467,13 @@ describe('ToadScheduler', () => {
         return Promise.resolve(undefined)
       })
 
-      await SimpleIntervalJob.createAndExecute({
+      const job = await SimpleIntervalJob.createAndExecute({
         days: 2,
         runImmediately: true,
       }, task)
 
       expect(counter).toBe(1)
+      job.stop()
     })
   })
 })
