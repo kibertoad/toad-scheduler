@@ -116,7 +116,6 @@ describe('ToadScheduler', () => {
       await Promise.resolve()
       expect(counter).toBe(3)
       scheduler.stop()
-      scheduler.getAllJobs()
     }, 20000)
 
     it('allows enabling CronJob execution overrun', async () => {
