@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "croner": "^8.0.1"
+    "croner": "^9.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
