@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "croner": "^9.0.0"
+    "croner": "^8.1.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
@@ -38,7 +38,7 @@
     "karma-typescript": "^5.5.4",
     "prettier": "^3.0.0",
     "ts-jest": "^29.3.2",
-    "typescript": "5.8.3"
+    "typescript": "5.2.2"
   },
   "homepage": "https://github.com/kibertoad/toad-scheduler",
   "repository": {
