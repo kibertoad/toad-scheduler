@@ -39,7 +39,7 @@ export class CronJob extends Job {
   }
 
   start(): void {
-    this.cronInstance = Cron(
+    this.cronInstance = new Cron(
       this.schedule.cronExpression,
       {
         timezone: this.schedule.timezone,

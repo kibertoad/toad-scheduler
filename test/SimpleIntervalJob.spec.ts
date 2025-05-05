@@ -5,6 +5,10 @@ import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { AsyncTask } from '../lib/common/AsyncTask'
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 describe('ToadScheduler', () => {
   beforeEach(() => {
     mockTimers()
@@ -410,6 +414,66 @@ describe('ToadScheduler', () => {
       expect(counter).toBe(1)
 
       scheduler.stop()
+    })
+
+    it('awaits until runImmediately completes when using createAndExecute with AsyncTask', async () => {
+      unMockTimers()
+
+      let counter = 0
+      const task = new AsyncTask('simple task', async () => {
+        await sleep(200)
+        counter++
+        return Promise.resolve(undefined)
+      })
+
+      const job = await SimpleIntervalJob.createAndExecute({
+        days: 2,
+        runImmediately: true,
+      }, task)
+
+      expect(counter).toBe(1)
+      job.stop()
+    })
+
+    it('respects preventOverrun when using executeAsync with AsyncTask', async () => {
+      unMockTimers()
+
+      let counter = 0
+      const task = new AsyncTask('simple task', async () => {
+        await sleep(300)
+        counter++
+        return Promise.resolve(undefined)
+      })
+
+      const job = new SimpleIntervalJob({
+        days: 2,
+        runImmediately: true,
+      }, task)
+
+      const promise1 = job.executeAsync()
+      const promise2 = job.executeAsync()
+      await Promise.all([promise1, promise2])
+
+      expect(counter).toBe(1)
+      job.stop()
+    })
+
+    it('awaits until runImmediately completes when using createAndExecute with Task', async () => {
+      unMockTimers()
+
+      let counter = 0
+      const task = new Task('simple task', async () => {
+        counter++
+        return Promise.resolve(undefined)
+      })
+
+      const job = await SimpleIntervalJob.createAndExecute({
+        days: 2,
+        runImmediately: true,
+      }, task)
+
+      expect(counter).toBe(1)
+      job.stop()
     })
   })
 })

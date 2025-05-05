@@ -1,7 +1,13 @@
 import { defaultErrorHandler, loggingErrorHandler } from './Logger'
 import { isPromise } from './Utils'
+import { Task } from './Task'
+
+export function isAsyncTask(task: Task | AsyncTask): task is AsyncTask {
+  return (task as AsyncTask).isAsync === true
+}
 
 export class AsyncTask {
+  public isAsync = true
   public isExecuting: boolean
   private readonly id: string
   private readonly handler: (taskId?: string, jobId?: string) => Promise<unknown>
@@ -19,8 +25,12 @@ export class AsyncTask {
   }
 
   execute(jobId?: string): void {
+    void this.executeAsync(jobId)
+  }
+
+  executeAsync(jobId?: string): Promise<unknown> {
     this.isExecuting = true
-    this.handler(this.id, jobId)
+    return this.handler(this.id, jobId)
       .catch((err: Error) => {
         const errorHandleResult = this.errorHandler(err)
         if (isPromise(errorHandleResult)) {

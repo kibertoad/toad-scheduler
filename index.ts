@@ -1,6 +1,6 @@
 export { ToadScheduler } from './lib/toadScheduler'
-export { AsyncTask } from './lib/common/AsyncTask'
-export { Task } from './lib/common/Task'
+export { AsyncTask, isAsyncTask } from './lib/common/AsyncTask'
+export { Task, isSyncTask } from './lib/common/Task'
 export { Job } from './lib/common/Job'
 export { JobStatus } from './lib/common/Job'
 export { SimpleIntervalJob } from './lib/engines/simple-interval/SimpleIntervalJob'

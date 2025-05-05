@@ -1,5 +1,5 @@
 import Timeout = NodeJS.Timeout
-import { AsyncTask } from '../../common/AsyncTask'
+import { AsyncTask, isAsyncTask } from '../../common/AsyncTask'
 import { Job, JobStatus } from '../../common/Job'
 import { Task } from '../../common/Task'
 import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
@@ -60,5 +60,25 @@ export class SimpleIntervalJob extends Job {
       return JobStatus.RUNNING
     }
     return JobStatus.STOPPED
+  }
+
+  async executeAsync(): Promise<void> {
+    if (!this.task.isExecuting || !this.preventOverrun) {
+      if (isAsyncTask(this.task)) {
+        await this.task.executeAsync(this.id)
+      } else {
+        this.task.execute(this.id)
+      }
+    }
+  }
+
+  static async createAndExecute(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}): Promise<SimpleIntervalJob> {
+    const job = new SimpleIntervalJob({
+      ...schedule,
+      runImmediately: false,
+    }, task, options)
+
+    await job.executeAsync()
+    return job
   }
 }

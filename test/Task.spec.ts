@@ -1,8 +1,9 @@
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
-import { Task } from '../lib/common/Task'
+import { isSyncTask, Task } from '../lib/common/Task'
 import { unMockTimers } from './utils/timerUtils'
 import { expectAssertions } from './utils/assertUtils'
+import { AsyncTask } from '../lib/common/AsyncTask'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -10,6 +11,11 @@ function sleep(ms: number) {
 
 describe('ToadScheduler', () => {
   describe('Task', () => {
+    it('safeguard works', () => {
+      expect(isSyncTask(new Task('id', () => {}))).toBe(true)
+      expect(isSyncTask(new AsyncTask('id', () => Promise.resolve()))).toBe(false)
+    })
+
     it('correctly handles errors', (done) => {
       unMockTimers()
       expectAssertions(1)
