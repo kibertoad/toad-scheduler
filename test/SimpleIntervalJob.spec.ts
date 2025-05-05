@@ -4,7 +4,10 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { AsyncTask } from '../lib/common/AsyncTask'
-import { setTimeout } from 'node:timers/promises'
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -418,7 +421,7 @@ describe('ToadScheduler', () => {
 
       let counter = 0
       const task = new AsyncTask('simple task', async () => {
-        await setTimeout(200)
+        await sleep(200)
         counter++
         return Promise.resolve(undefined)
       })
@@ -436,7 +439,7 @@ describe('ToadScheduler', () => {
 
       let counter = 0
       const task = new AsyncTask('simple task', async () => {
-        await setTimeout(300)
+        await sleep(300)
         counter++
         return Promise.resolve(undefined)
       })
