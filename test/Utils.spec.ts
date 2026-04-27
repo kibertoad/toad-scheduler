@@ -19,6 +19,12 @@ describe('Utils', () => {
       expect(isPromise({})).toEqual(false)
       expect(isPromise(() => {})).toEqual(false)
       expect(isPromise('text')).toEqual(false)
+      expect(isPromise({ then: null })).toEqual(false)
+      expect(isPromise({ then: 'not a function' })).toEqual(false)
+    })
+
+    it('Correctly identifies thenable', () => {
+      expect(isPromise({ then: () => {} })).toEqual(true)
     })
   })
 })
