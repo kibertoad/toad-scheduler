@@ -7,7 +7,7 @@
 
 In-memory TypeScript job scheduler that repeatedly executes given tasks within specified intervals of time (e. g. "each 20 seconds"). Cron syntax is also supported in case you need it.
 
-Node.js 12+ and modern browsers are supported
+Node.js 18+ and modern browsers are supported
 
 ## Getting started
 
