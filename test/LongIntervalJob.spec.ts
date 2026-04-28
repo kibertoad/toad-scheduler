@@ -125,12 +125,9 @@ describe('ToadScheduler', () => {
 
     // https://github.com/kibertoad/toad-scheduler/issues/193
     // https://github.com/kibertoad/toad-scheduler/issues/212
-    it('allows executing time-eating (>= 24.85d) job immediately', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
+    // ToDo investigate why this fails in Jasmine
+    const itIfNotJasmine = isJasmine ? it.skip : it
+    itIfNotJasmine('allows executing time-eating (>= 24.85d) job immediately', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
