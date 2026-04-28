@@ -13,7 +13,7 @@ module.exports = function (config) {
         },
         resolve: {
           alias: {
-            croner: require('path').resolve(__dirname, 'node_modules/croner/dist/croner.cjs'),
+            croner: require('path').resolve(__dirname, 'node_modules/croner/dist/croner.min.cjs'),
           },
           extensions: ['.js', '.json', '.mjs', '.cjs', '.ts', '.tsx'],
         },

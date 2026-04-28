@@ -4,9 +4,6 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 
-const isJest = process.env.JEST_WORKER_ID !== undefined
-const isJasmine = !isJest
-
 describe('ToadScheduler', () => {
   beforeEach(() => {
     mockTimers()
@@ -125,9 +122,7 @@ describe('ToadScheduler', () => {
 
     // https://github.com/kibertoad/toad-scheduler/issues/193
     // https://github.com/kibertoad/toad-scheduler/issues/212
-    // ToDo investigate why this fails in Jasmine
-    const itIfNotJasmine = isJasmine ? it.skip : it
-    itIfNotJasmine('allows executing time-eating (>= 24.85d) job immediately', () => {
+    it('allows executing time-eating (>= 24.85d) job immediately', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -293,11 +288,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles large intervals', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -342,11 +332,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles large intervals repeatedly', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -379,11 +364,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles very large intervals', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
