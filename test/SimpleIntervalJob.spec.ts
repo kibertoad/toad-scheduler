@@ -225,17 +225,18 @@ describe('ToadScheduler', () => {
     it('stop() inside an immediate sync run prevents subsequent runs', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
-      let job: SimpleIntervalJob
+      const jobId = 'sync-immediate-stop'
       const task = new Task('simple task', () => {
         counter++
-        job.stop()
+        scheduler.stopById(jobId)
       })
-      job = new SimpleIntervalJob(
+      const job = new SimpleIntervalJob(
         {
           seconds: 2,
           runImmediately: true,
         },
         task,
+        { id: jobId },
       )
 
       scheduler.addSimpleIntervalJob(job)
