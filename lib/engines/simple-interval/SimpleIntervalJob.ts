@@ -22,6 +22,15 @@ export class SimpleIntervalJob extends Job {
     this.task = task
   }
 
+  /**
+   * Start the job.
+   *
+   * Lifecycle invariant: the underlying timer is set up first, and any
+   * `runImmediately` execution happens last. A `stop()` call issued from
+   * inside the immediate task (sync) therefore finds an active timer to
+   * clear, preventing the dangling-timer / double-run bug from #176.
+   * `LongIntervalJob.start()` follows the same shape.
+   */
   start(): void {
     const time = toMsecs(this.schedule)
     // See https://github.com/kibertoad/toad-scheduler/issues/24
@@ -36,15 +45,15 @@ export class SimpleIntervalJob extends Job {
       this.stop()
     }
 
-    if (this.schedule.runImmediately) {
-      this.task.execute(this.id)
-    }
-
     this.timer = setInterval(() => {
       if (!this.task.isExecuting || !this.preventOverrun) {
         this.task.execute(this.id)
       }
     }, time)
+
+    if (this.schedule.runImmediately) {
+      this.task.execute(this.id)
+    }
   }
 
   stop(): void {

@@ -4,9 +4,6 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 
-const isJest = process.env.JEST_WORKER_ID !== undefined
-const isJasmine = !isJest
-
 describe('ToadScheduler', () => {
   beforeEach(() => {
     mockTimers()
@@ -120,6 +117,83 @@ describe('ToadScheduler', () => {
       expect(counter).toBe(0)
       scheduler.addIntervalJob(job)
       expect(counter).toBe(1)
+      scheduler.stop()
+    })
+
+    // https://github.com/kibertoad/toad-scheduler/issues/193
+    // https://github.com/kibertoad/toad-scheduler/issues/212
+    it('allows executing time-eating (>= 24.85d) job immediately', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+          runImmediately: true,
+        },
+        task,
+      )
+
+      expect(counter).toBe(0)
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      scheduler.stop()
+    })
+
+    // https://github.com/kibertoad/toad-scheduler/issues/176
+    it('stop() inside an immediate sync run prevents subsequent runs (short path)', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const jobId = 'long-short-immediate-stop'
+      const task = new Task('simple task', () => {
+        counter++
+        scheduler.stopById(jobId)
+      })
+      const job = new LongIntervalJob(
+        {
+          seconds: 2,
+          runImmediately: true,
+        },
+        task,
+        { id: jobId },
+      )
+
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+
+      scheduler.stop()
+    })
+
+    // https://github.com/kibertoad/toad-scheduler/issues/176
+    it('stop() inside an immediate sync run prevents subsequent runs (time-eating path)', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const jobId = 'long-eating-immediate-stop'
+      const task = new Task('simple task', () => {
+        counter++
+        scheduler.stopById(jobId)
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+          runImmediately: true,
+        },
+        task,
+        { id: jobId },
+      )
+
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      // Advance well past one MAX_TIMEOUT_DURATION_MS chunk; chain should be stopped.
+      advanceTimersByTime(2_147_483_646)
+      expect(counter).toBe(1)
+
       scheduler.stop()
     })
 
@@ -269,11 +343,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles large intervals', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -318,11 +387,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles large intervals repeatedly', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {
@@ -355,11 +419,6 @@ describe('ToadScheduler', () => {
     })
 
     it('correctly handles very large intervals', () => {
-      // ToDo investigate why this fails in Jasmine
-      if (isJasmine) {
-        return
-      }
-
       let counter = 0
       const scheduler = new ToadScheduler()
       const task = new Task('simple task', () => {

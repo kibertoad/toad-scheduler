@@ -7,6 +7,11 @@ export function mockTimers() {
   }
   if (isJasmine) {
     jasmine.clock().install()
+    // jest.useFakeTimers() mocks Date by default; jasmine.clock().install()
+    // only mocks setTimeout/setInterval. Without mockDate(), Date.now() stays
+    // on the real wall clock and time-eating logic in LongIntervalJob loops
+    // forever because (mainTaskExecutionTime - Date.now()) never decreases.
+    jasmine.clock().mockDate(new Date())
   }
 }
 
