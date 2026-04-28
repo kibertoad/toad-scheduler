@@ -142,6 +142,61 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    // https://github.com/kibertoad/toad-scheduler/issues/176
+    it('stop() inside an immediate sync run prevents subsequent runs (short path)', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const jobId = 'long-short-immediate-stop'
+      const task = new Task('simple task', () => {
+        counter++
+        scheduler.stopById(jobId)
+      })
+      const job = new LongIntervalJob(
+        {
+          seconds: 2,
+          runImmediately: true,
+        },
+        task,
+        { id: jobId },
+      )
+
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+
+      scheduler.stop()
+    })
+
+    // https://github.com/kibertoad/toad-scheduler/issues/176
+    it('stop() inside an immediate sync run prevents subsequent runs (time-eating path)', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const jobId = 'long-eating-immediate-stop'
+      const task = new Task('simple task', () => {
+        counter++
+        scheduler.stopById(jobId)
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+          runImmediately: true,
+        },
+        task,
+        { id: jobId },
+      )
+
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      // Advance well past one MAX_TIMEOUT_DURATION_MS chunk; chain should be stopped.
+      advanceTimersByTime(2_147_483_646)
+      expect(counter).toBe(1)
+
+      scheduler.stop()
+    })
+
     it('correctly handles milliseconds', () => {
       let counter = 0
       const scheduler = new ToadScheduler()

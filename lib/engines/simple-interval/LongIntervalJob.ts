@@ -72,25 +72,27 @@ export class LongIntervalJob extends Job {
   }
 
   start(): void {
+    if (this.childJob) {
+      this.childJob.start()
+    } else {
+      const time = toMsecs(this.schedule)
+      // Avoid starting duplicates and leaking previous timers
+      if (this.timer) {
+        this.stop()
+      }
+
+      this.timer = setInterval(() => {
+        if (!this.task.isExecuting || !this.preventOverrun) {
+          this.task.execute(this.id)
+        }
+      }, time)
+    }
+
+    // Fire after the underlying timer/childJob is in place so a stop()
+    // call from inside the immediate task can clear it (issue #176).
     if (this.schedule.runImmediately) {
       this.task.execute(this.id)
     }
-
-    if (this.childJob) {
-      return this.childJob.start()
-    }
-
-    const time = toMsecs(this.schedule)
-    // Avoid starting duplicates and leaking previous timers
-    if (this.timer) {
-      this.stop()
-    }
-
-    this.timer = setInterval(() => {
-      if (!this.task.isExecuting || !this.preventOverrun) {
-        this.task.execute(this.id)
-      }
-    }, time)
   }
 
   stop(): void {
