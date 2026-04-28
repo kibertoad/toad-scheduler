@@ -72,6 +72,10 @@ export class LongIntervalJob extends Job {
   }
 
   start(): void {
+    if (this.schedule.runImmediately) {
+      this.task.execute(this.id)
+    }
+
     if (this.childJob) {
       return this.childJob.start()
     }
@@ -80,10 +84,6 @@ export class LongIntervalJob extends Job {
     // Avoid starting duplicates and leaking previous timers
     if (this.timer) {
       this.stop()
-    }
-
-    if (this.schedule.runImmediately) {
-      this.task.execute(this.id)
     }
 
     this.timer = setInterval(() => {

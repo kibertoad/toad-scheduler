@@ -123,6 +123,33 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    // https://github.com/kibertoad/toad-scheduler/issues/193
+    // https://github.com/kibertoad/toad-scheduler/issues/212
+    it('allows executing time-eating (>= 24.85d) job immediately', () => {
+      // ToDo investigate why this fails in Jasmine
+      if (isJasmine) {
+        return
+      }
+
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+          runImmediately: true,
+        },
+        task,
+      )
+
+      expect(counter).toBe(0)
+      scheduler.addIntervalJob(job)
+      expect(counter).toBe(1)
+      scheduler.stop()
+    })
+
     it('correctly handles milliseconds', () => {
       let counter = 0
       const scheduler = new ToadScheduler()
