@@ -71,6 +71,18 @@ export class LongIntervalJob extends Job {
     this.childJob.start()
   }
 
+  /**
+   * Start the job.
+   *
+   * Lifecycle invariant: the underlying timer (or childJob, for the
+   * time-eating path used when the interval exceeds setInterval's
+   * ~24.85d cap) is brought up first, and any `runImmediately`
+   * execution happens last. Both paths share the rule, so a `stop()`
+   * issued from inside the immediate task always finds an active
+   * timer to clear (#176), and `runImmediately` is honored on the
+   * time-eating path too (#193, #212). `SimpleIntervalJob.start()`
+   * follows the same shape.
+   */
   start(): void {
     if (this.childJob) {
       this.childJob.start()
@@ -88,8 +100,6 @@ export class LongIntervalJob extends Job {
       }, time)
     }
 
-    // Fire after the underlying timer/childJob is in place so a stop()
-    // call from inside the immediate task can clear it (issue #176).
     if (this.schedule.runImmediately) {
       this.task.execute(this.id)
     }

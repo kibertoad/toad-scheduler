@@ -63,6 +63,30 @@ Note that in order to avoid memory leaks, it is recommended to use promise chain
 Note that your error handlers can be asynchronous and return a promise. In such case an additional catch block will be attached to them, and should
 there be an error while trying to resolve that promise, and logging error will be logged using the default error handler (`console.error`).
 
+## Running a task immediately
+
+When you set `runImmediately: true` on `SimpleIntervalJob` or `LongIntervalJob`, the task fires once as part of `start()` (i.e. when you call `scheduler.addSimpleIntervalJob(job)` / `addLongIntervalJob(job)`), and then again on every interval tick.
+
+The library guarantees a specific ordering: the underlying interval timer is set up **before** the immediate run is fired. This matters if your task calls `job.stop()` (or `scheduler.stopById(jobId)`) on its very first run — the just-scheduled timer is still active and gets cleared, so no further runs happen.
+
+```ts
+const scheduler = new ToadScheduler()
+const jobId = 'one-shot-bootstrap'
+const task = new Task('bootstrap', () => {
+  doInitialWork()
+  scheduler.stopById(jobId)
+})
+const job = new SimpleIntervalJob(
+  { seconds: 60, runImmediately: true },
+  task,
+  { id: jobId },
+)
+scheduler.addSimpleIntervalJob(job)
+// task fires once now, then never again — no leftover 60s timer.
+```
+
+`runImmediately` is honored equally on `SimpleIntervalJob` and on `LongIntervalJob` (both for short intervals and for the long, "time-eating" path used when the interval exceeds setInterval's ~24.85-day cap).
+
 ## Preventing task run overruns
 
 In case you want to prevent second instance of a task from being fired up while first one is still executing, you can use `preventOverrun` options:
