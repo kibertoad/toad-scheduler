@@ -221,6 +221,33 @@ describe('ToadScheduler', () => {
       scheduler.stop()
     })
 
+    // https://github.com/kibertoad/toad-scheduler/issues/176
+    it('stop() inside an immediate sync run prevents subsequent runs', () => {
+      let counter = 0
+      const scheduler = new ToadScheduler()
+      let job: SimpleIntervalJob
+      const task = new Task('simple task', () => {
+        counter++
+        job.stop()
+      })
+      job = new SimpleIntervalJob(
+        {
+          seconds: 2,
+          runImmediately: true,
+        },
+        task,
+      )
+
+      scheduler.addSimpleIntervalJob(job)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+      advanceTimersByTime(2000)
+      expect(counter).toBe(1)
+
+      scheduler.stop()
+    })
+
     it('correctly handles milliseconds', () => {
       let counter = 0
       const scheduler = new ToadScheduler()

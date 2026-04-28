@@ -36,15 +36,17 @@ export class SimpleIntervalJob extends Job {
       this.stop()
     }
 
-    if (this.schedule.runImmediately) {
-      this.task.execute(this.id)
-    }
-
     this.timer = setInterval(() => {
       if (!this.task.isExecuting || !this.preventOverrun) {
         this.task.execute(this.id)
       }
     }, time)
+
+    // Run last so that stop() called from inside the immediate task
+    // can clear the just-scheduled timer (issue #176).
+    if (this.schedule.runImmediately) {
+      this.task.execute(this.id)
+    }
   }
 
   stop(): void {
