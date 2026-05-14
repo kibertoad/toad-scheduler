@@ -24,11 +24,15 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Configure Git
         run: |
@@ -36,10 +40,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Determine version bump
         id: version
@@ -54,9 +58,9 @@ jobs:
 
       - name: Bump version
         run: |
-          npm version ${{ steps.version.outputs.bump }} -m "chore: release v%s"
+          pnpm version ${{ steps.version.outputs.bump }} -m "chore: release v%s"
           git push
           git push --tags
 
       - name: Publish to npm
-        run: npm publish --access public --provenance
+        run: pnpm publish --access public --provenance --no-git-checks
