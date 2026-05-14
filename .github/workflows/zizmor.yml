@@ -1,0 +1,39 @@
+---
+
+name: zizmor
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    name: zizmor
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e # v0.5.3
+        with:
+          min-severity: medium
+          # advanced-security uses SARIF output, but zizmor's SARIF mode
+          # always exits 0, so the job wouldn't fail on findings.
+          # Disable it (and enable inline annotations instead) so medium+
+          # severity findings actually fail the workflow.
+          advanced-security: false
+          annotations: true
