@@ -19,6 +19,7 @@ jobs:
     name: zizmor
     permissions:
       contents: read
+      security-events: write
 
     steps:
       - name: Checkout Repository
@@ -27,10 +28,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Install zizmor
-        run: pipx install zizmor==1.24.1
-
       - name: Run zizmor
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: zizmor --min-severity=medium .github/workflows/
+        uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e # v0.5.3
+        with:
+          min-severity: medium
