@@ -19,7 +19,6 @@ jobs:
     name: zizmor
     permissions:
       contents: read
-      security-events: write
 
     steps:
       - name: Checkout Repository
@@ -32,3 +31,9 @@ jobs:
         uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e # v0.5.3
         with:
           min-severity: medium
+          # advanced-security uses SARIF output, but zizmor's SARIF mode
+          # always exits 0, so the job wouldn't fail on findings.
+          # Disable it (and enable inline annotations instead) so medium+
+          # severity findings actually fail the workflow.
+          advanced-security: false
+          annotations: true
