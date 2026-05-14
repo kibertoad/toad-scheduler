@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
