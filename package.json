@@ -11,6 +11,7 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "packageManager": "pnpm@11.1.1",
   "scripts": {
     "build": "tsc",
     "test": "jest --config=jest.config.json",
@@ -19,7 +20,7 @@
     "lint": "eslint \"lib/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
     "format": "prettier --write \"{lib,test}/**/*.{js,ts}\" index.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "croner": "^10.0.1"

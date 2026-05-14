@@ -22,17 +22,21 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           always-auth: false
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: Run npm install
-        run: npm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run Tests
-        run: npm run test:coverage
+        run: pnpm run test:coverage
         env:
           CI: true
 
