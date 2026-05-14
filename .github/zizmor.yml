@@ -1,0 +1,6 @@
+rules:
+  artipacked:
+    ignore:
+      # publish.yml needs persisted credentials so the workflow can
+      # push the version-bump commit and release tag back to main.
+      - publish.yml
