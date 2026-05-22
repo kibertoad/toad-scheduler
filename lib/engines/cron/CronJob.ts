@@ -42,6 +42,7 @@ export class CronJob extends Job {
     this.cronInstance = new Cron(
       this.schedule.cronExpression,
       {
+        protect: this.preventOverrun,
         timezone: this.schedule.timezone,
         protect: false,
       },
