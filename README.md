@@ -113,6 +113,31 @@ const job = new SimpleIntervalJob(
 scheduler.addSimpleIntervalJob(job);
 ```
 
+## Letting the process exit naturally (unref)
+
+By default, scheduler timers keep the Node.js process alive — the process won't exit while jobs are scheduled. If you want the scheduler to never be the reason your process stays up, you can opt in to `unref`, either per job or scheduler-wide:
+
+```js
+import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+
+// per job
+const job = new SimpleIntervalJob(
+	{ minutes: 5 },
+	new Task('cache sweep', () => { /* ... */ }),
+    { unref: true }
+);
+
+// or scheduler-wide default (per-job option always wins over it)
+const scheduler = new ToadScheduler({ unref: true });
+scheduler.addSimpleIntervalJob(job);
+```
+
+`unref` is supported by all job types (`SimpleIntervalJob`, `LongIntervalJob` — including its long "time-eating" path — and `CronJob`, where it is passed through to croner). In browsers it is a no-op, since browser timers have no ref semantics.
+
+**When to use it:** when the scheduler runs inside an application that has other things keeping the event loop alive (an HTTP server, a queue consumer, a DB connection pool). The process can then shut down naturally once those are closed, without having to order `scheduler.stop()` calls carefully or force a `process.exit()`.
+
+**When NOT to use it:** in a standalone worker script where the scheduler's timers are the only thing keeping the process alive. With `unref: true` such a process exits immediately after startup and no task ever runs. This is also why the option is off by default.
+
 ## Using IDs and ES6-style imports
 
 You can attach IDs to tasks to identify them later. This is helpful in projects that run a lot of tasks and especially if you want to target some of the tasks specifically (e. g. in order to stop or restart them, or to check their status).
@@ -319,8 +344,15 @@ function createTask(job: AbstractBackgroundJob): AsyncTask {
 * `executeAsync: Promise<void>` - executes the job task once and awaits its completion. Next scheduled execution will still be executed on schedule. Respects the "preventOverrun" check.
 * `static createAndExecute(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}): Promise<SimpleIntervalJob>` - creates and immediately executes the job, resolving only after execution has completed.
 
+All job types accept an optional `JobOptions` object as the last constructor argument:
+
+* `id?: string` - unique identifier of the job, used to target it via scheduler methods such as `stopById`;
+* `preventOverrun?: boolean` - if set to true, prevents a second instance of the task from being fired up while the first one is still executing;
+* `unref?: boolean` - if set to true, the job's timer will not keep the Node.js process alive (see "Letting the process exit naturally"). Off by default; a no-op in browsers.
+
 ## API for scheduler
 
+* `new ToadScheduler(options?: ToadSchedulerOptions)` - creates a scheduler. Supported options: `unref?: boolean` - default `unref` behavior for all jobs added to this scheduler that don't set the option themselves (an explicit per-job `unref` always wins);
 * `addSimpleIntervalJob(job: SimpleIntervalJob): void` - registers and starts a new job;
 * `addLongIntervalJob(job: LongIntervalJob): void` - registers and starts a new job with support for intervals longer than 24.85 days;
 * `addIntervalJob(job: SimpleIntervalJob | LongIntervalJob): void` - registers and starts new interval-based job;

@@ -3,6 +3,7 @@ import { LongIntervalJob } from '../lib/engines/simple-interval/LongIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
+import { expectTimerRefState } from './utils/assertUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -475,6 +476,68 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(1)
       expect(counter).toBe(1)
 
+      scheduler.stop()
+    })
+
+    it('unrefs the timer when unref option is enabled', () => {
+      unMockTimers()
+
+      const job = new LongIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+        { unref: true },
+      )
+      job.start()
+
+      expectTimerRefState((job as any).timer, false)
+      job.stop()
+    })
+
+    it('keeps the timer ref-ed by default', () => {
+      unMockTimers()
+
+      const job = new LongIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+      )
+      job.start()
+
+      expectTimerRefState((job as any).timer, true)
+      job.stop()
+    })
+
+    it('unrefs the time-eating child job timer when unref option is enabled', () => {
+      unMockTimers()
+
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+        },
+        new NoopTask(),
+        { unref: true },
+      )
+
+      expectTimerRefState((job as any).childJob.timer, false)
+      job.stop()
+    })
+
+    it('propagates scheduler unref default to an already running time-eating child job', () => {
+      unMockTimers()
+
+      const scheduler = new ToadScheduler({ unref: true })
+      const job = new LongIntervalJob(
+        {
+          days: 30,
+        },
+        new NoopTask(),
+      )
+      scheduler.addLongIntervalJob(job)
+
+      expectTimerRefState((job as any).childJob.timer, false)
       scheduler.stop()
     })
   })

@@ -311,5 +311,61 @@ describe('ToadScheduler', () => {
       advanceTimersByTime(40000)
       expect(counter).toBe(1)
     })
+
+    it('passes unref option through to croner', () => {
+      const job = new CronJob(
+        {
+          cronExpression: CRON_EVERY_MINUTE,
+        },
+        new NoopTask(),
+        { unref: true },
+      )
+      job.start()
+
+      expect((job as any).cronInstance.options.unref).toBe(true)
+      job.stop()
+    })
+
+    it('does not unref croner timer by default', () => {
+      const job = new CronJob(
+        {
+          cronExpression: CRON_EVERY_MINUTE,
+        },
+        new NoopTask(),
+      )
+      job.start()
+
+      expect((job as any).cronInstance.options.unref).toBe(false)
+      job.stop()
+    })
+
+    it('applies scheduler unref default to cron jobs', () => {
+      const scheduler = new ToadScheduler({ unref: true })
+      const job = new CronJob(
+        {
+          cronExpression: CRON_EVERY_MINUTE,
+        },
+        new NoopTask(),
+      )
+      scheduler.addCronJob(job)
+
+      expect((job as any).cronInstance.options.unref).toBe(true)
+      scheduler.stop()
+    })
+
+    it('per-job unref wins over scheduler default for cron jobs', () => {
+      const scheduler = new ToadScheduler({ unref: true })
+      const job = new CronJob(
+        {
+          cronExpression: CRON_EVERY_MINUTE,
+        },
+        new NoopTask(),
+        { unref: false },
+      )
+      scheduler.addCronJob(job)
+
+      expect((job as any).cronInstance.options.unref).toBe(false)
+      scheduler.stop()
+    })
   })
 })
