@@ -13,9 +13,11 @@ export class LongIntervalJob extends Job {
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
   private readonly preventOverrun: boolean
+  private unref?: boolean
   constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
     this.preventOverrun = options.preventOverrun ?? true
+    this.unref = options.unref
     this.schedule = schedule
     this.task = task
 
@@ -43,6 +45,7 @@ export class LongIntervalJob extends Job {
             milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, remainingMs),
           },
           timeEater,
+          { unref: this.unref },
         )
         this.childJob.start()
       } else {
@@ -56,6 +59,7 @@ export class LongIntervalJob extends Job {
             this.setTimeEatingJob(toMsecs(this.schedule))
             return this.task.execute(this.id)
           }),
+          { unref: this.unref },
         )
         this.childJob.start()
       }
@@ -67,6 +71,7 @@ export class LongIntervalJob extends Job {
         milliseconds: Math.min(MAX_TIMEOUT_DURATION_MS - 1, startingRemainingMs),
       },
       timeEater,
+      { unref: this.unref },
     )
     this.childJob.start()
   }
@@ -98,6 +103,11 @@ export class LongIntervalJob extends Job {
           this.task.execute(this.id)
         }
       }, time)
+
+      if (this.unref) {
+        // Optional call keeps this browser-safe, same as in SimpleIntervalJob
+        this.timer.unref?.()
+      }
     }
 
     if (this.schedule.runImmediately) {
@@ -124,5 +134,20 @@ export class LongIntervalJob extends Job {
       return JobStatus.RUNNING
     }
     return JobStatus.STOPPED
+  }
+
+  applyUnrefDefault(unref: boolean): void {
+    if (this.unref !== undefined) {
+      return
+    }
+    this.unref = unref
+    if (this.unref && this.timer) {
+      this.timer.unref?.()
+    }
+    // The time-eating child job may already be running (it is created and
+    // started in the constructor), so forward the default to keep the
+    // >24.85-day chain unref'd end-to-end. Children recreated later read
+    // this.unref at creation time and pick the resolved value up on their own.
+    this.childJob?.applyUnrefDefault(unref)
   }
 }

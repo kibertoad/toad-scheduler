@@ -4,6 +4,7 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { AsyncTask } from '../lib/common/AsyncTask'
+import { expectTimerRefState } from './utils/assertUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -502,6 +503,58 @@ describe('ToadScheduler', () => {
 
       expect(counter).toBe(1)
       job.stop()
+    })
+
+    it('unrefs the timer when unref option is enabled', () => {
+      unMockTimers()
+
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+        { unref: true },
+      )
+      job.start()
+
+      expectTimerRefState((job as any).timer, false)
+      job.stop()
+    })
+
+    it('keeps the timer ref-ed by default', () => {
+      unMockTimers()
+
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+      )
+      job.start()
+
+      expectTimerRefState((job as any).timer, true)
+      job.stop()
+    })
+
+    it('still executes the task on an unref-ed timer', async () => {
+      unMockTimers()
+
+      let counter = 0
+      const task = new Task('simple task', () => {
+        counter++
+      })
+      const job = new SimpleIntervalJob(
+        {
+          milliseconds: 10,
+        },
+        task,
+        { unref: true },
+      )
+      job.start()
+
+      await sleep(100)
+      job.stop()
+      expect(counter).toBeGreaterThan(0)
     })
   })
 })

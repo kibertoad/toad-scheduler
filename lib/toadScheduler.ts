@@ -10,13 +10,19 @@ type EngineRegistry = {
   cronJobEngine?: CronJobEngine
 }
 
+export type ToadSchedulerOptions = {
+  unref?: boolean
+}
+
 export class ToadScheduler {
   private readonly engines: EngineRegistry
   private readonly jobRegistry: Record<string, Job>
+  private readonly options: ToadSchedulerOptions
 
-  constructor() {
+  constructor(options: ToadSchedulerOptions = {}) {
     this.engines = {}
     this.jobRegistry = {}
+    this.options = options
   }
 
   addIntervalJob(job: SimpleIntervalJob | LongIntervalJob) {
@@ -42,6 +48,9 @@ export class ToadScheduler {
         throw new Error(`Job with an id ${job.id} is already registered.`)
       }
       this.jobRegistry[job.id] = job
+    }
+    if (this.options.unref !== undefined) {
+      job.applyUnrefDefault(this.options.unref)
     }
   }
 

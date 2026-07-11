@@ -4,7 +4,7 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { JobStatus } from '../lib/common/Job'
-import { expectToMatchObject } from './utils/assertUtils'
+import { expectTimerRefState, expectToMatchObject } from './utils/assertUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -357,6 +357,74 @@ describe('ToadScheduler', () => {
       expect(counter).toBe(12)
       expect(counter2).toBe(1)
 
+      scheduler.stop()
+    })
+  })
+
+  describe('unref default', () => {
+    it('applies scheduler-wide unref default to jobs without an explicit option', () => {
+      unMockTimers()
+
+      const scheduler = new ToadScheduler({ unref: true })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+      )
+      scheduler.addSimpleIntervalJob(job)
+
+      expectTimerRefState((job as any).timer, false)
+      scheduler.stop()
+    })
+
+    it('per-job unref option wins over scheduler default', () => {
+      unMockTimers()
+
+      const scheduler = new ToadScheduler({ unref: true })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+        { unref: false },
+      )
+      scheduler.addSimpleIntervalJob(job)
+
+      expectTimerRefState((job as any).timer, true)
+      scheduler.stop()
+    })
+
+    it('per-job unref option enables unref even when scheduler default is off', () => {
+      unMockTimers()
+
+      const scheduler = new ToadScheduler({ unref: false })
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+        { unref: true },
+      )
+      scheduler.addSimpleIntervalJob(job)
+
+      expectTimerRefState((job as any).timer, false)
+      scheduler.stop()
+    })
+
+    it('does not unref timers when no default is set', () => {
+      unMockTimers()
+
+      const scheduler = new ToadScheduler()
+      const job = new SimpleIntervalJob(
+        {
+          seconds: 20,
+        },
+        new NoopTask(),
+      )
+      scheduler.addSimpleIntervalJob(job)
+
+      expectTimerRefState((job as any).timer, true)
       scheduler.stop()
     })
   })

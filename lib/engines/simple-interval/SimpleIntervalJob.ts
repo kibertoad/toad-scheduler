@@ -7,6 +7,7 @@ import { SimpleIntervalSchedule, toMsecs } from './SimpleIntervalSchedule'
 export type JobOptions = {
   preventOverrun?: boolean
   id?: string
+  unref?: boolean
 }
 
 export class SimpleIntervalJob extends Job {
@@ -14,10 +15,12 @@ export class SimpleIntervalJob extends Job {
   private readonly schedule: SimpleIntervalSchedule
   private readonly task: Task | AsyncTask
   private readonly preventOverrun: boolean
+  private unref?: boolean
 
   constructor(schedule: SimpleIntervalSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
     this.preventOverrun = options.preventOverrun ?? true
+    this.unref = options.unref
     this.schedule = schedule
     this.task = task
   }
@@ -51,6 +54,12 @@ export class SimpleIntervalJob extends Job {
       }
     }, time)
 
+    if (this.unref) {
+      // Optional call keeps this browser-safe: there setInterval returns a
+      // number, so `.unref` is undefined and the call short-circuits.
+      this.timer.unref?.()
+    }
+
     if (this.schedule.runImmediately) {
       this.task.execute(this.id)
     }
@@ -62,6 +71,17 @@ export class SimpleIntervalJob extends Job {
     }
     clearInterval(this.timer)
     this.timer = undefined
+  }
+
+  applyUnrefDefault(unref: boolean): void {
+    if (this.unref !== undefined) {
+      return
+    }
+    this.unref = unref
+    if (this.unref && this.timer) {
+      // Node allows unref() on an already-running timer
+      this.timer.unref?.()
+    }
   }
 
   getStatus(): JobStatus {

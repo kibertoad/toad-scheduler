@@ -23,12 +23,14 @@ export class CronJob extends Job {
   private readonly schedule: CronSchedule
   private readonly task: Task | AsyncTask
   private readonly preventOverrun: boolean
+  private unref?: boolean
 
   private cronInstance: Cron | undefined
 
   constructor(schedule: CronSchedule, task: Task | AsyncTask, options: JobOptions = {}) {
     super(options.id)
     this.preventOverrun = options.preventOverrun || false
+    this.unref = options.unref
     this.schedule = schedule
     this.task = task
   }
@@ -44,6 +46,7 @@ export class CronJob extends Job {
       {
         timezone: this.schedule.timezone,
         protect: false,
+        unref: this.unref,
       },
       () => {
         if (!this.task.isExecuting || !this.preventOverrun) {
@@ -56,5 +59,20 @@ export class CronJob extends Job {
   /* istanbul ignore next */
   stop(): void {
     this.cronInstance?.stop()
+  }
+
+  applyUnrefDefault(unref: boolean): void {
+    if (this.unref !== undefined) {
+      return
+    }
+    this.unref = unref
+    // The scheduler applies defaults before starting the job, but a job that
+    // was started manually beforehand has already handed the old value to
+    // croner — recreate the instance so the resolved value takes effect,
+    // mirroring how the interval jobs unref an already-running timer.
+    if (this.unref && this.cronInstance) {
+      this.stop()
+      this.start()
+    }
   }
 }
