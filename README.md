@@ -122,8 +122,8 @@ import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
 // per job
 const job = new SimpleIntervalJob(
-	{ minutes: 5 },
-	new Task('cache sweep', () => { /* ... */ }),
+    { minutes: 5 },
+    new Task('cache sweep', () => { /* ... */ }),
     { unref: true }
 );
 

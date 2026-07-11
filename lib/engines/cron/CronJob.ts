@@ -66,5 +66,13 @@ export class CronJob extends Job {
       return
     }
     this.unref = unref
+    // The scheduler applies defaults before starting the job, but a job that
+    // was started manually beforehand has already handed the old value to
+    // croner — recreate the instance so the resolved value takes effect,
+    // mirroring how the interval jobs unref an already-running timer.
+    if (this.unref && this.cronInstance) {
+      this.stop()
+      this.start()
+    }
   }
 }
