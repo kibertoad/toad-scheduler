@@ -26,7 +26,7 @@ importers:
         version: 10.9.0
       jasmine-core:
         specifier: ^7.0.1
-        version: 7.0.1
+        version: 7.0.2
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.41)
@@ -1375,8 +1375,8 @@ packages:
   jasmine-core@4.6.1:
     resolution: {integrity: sha512-VYz/BjjmC3klLJlLwA4Kw8ytk0zDSmbbDLNs794VnWmkcCB7I9aAL/D48VNQtmITyPvea2C3jdUMfc3kAoy0PQ==}
 
-  jasmine-core@7.0.1:
-    resolution: {integrity: sha512-AVUnCekV7RBFS6k4+bc9OrLTbEcDYM9gVHtUuPMWrpFUZBovr5p47WbVTKbr6gBYeAtBBe+nX32ivrvc0Ne2XA==}
+  jasmine-core@7.0.2:
+    resolution: {integrity: sha512-YMVijt84KPQQFm1db1AQAxTXfq0k3wU06OkepLViljURFqiRQ7EYYX2eUAshhUv9fA9t1E2N65GrdqvupA9VPQ==}
 
   jest-changed-files@29.7.0:
     resolution: {integrity: sha512-fEArFiwf1BpQ+4bXSprcDc3/x4HSzL4al2tozwVpDFpsxALjLYdyiIK4e5Vz66GQJIbXJ82+35PtysofptNX2w==}
@@ -3951,7 +3951,7 @@ snapshots:
 
   jasmine-core@4.6.1: {}
 
-  jasmine-core@7.0.1: {}
+  jasmine-core@7.0.2: {}
 
   jest-changed-files@29.7.0:
     dependencies:
