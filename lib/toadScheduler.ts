@@ -25,6 +25,9 @@ export class ToadScheduler {
     this.options = options
   }
 
+  /**
+   * @deprecated in favor of unified addJob method
+   */
   addIntervalJob(job: SimpleIntervalJob | LongIntervalJob) {
     if (!this.engines.simpleIntervalEngine) {
       this.engines.simpleIntervalEngine = new SimpleIntervalEngine()
@@ -34,10 +37,16 @@ export class ToadScheduler {
     this.engines.simpleIntervalEngine.add(job)
   }
 
+  /**
+   * @deprecated in favor of unified addJob method
+   */
   addLongIntervalJob(job: LongIntervalJob): void {
     return this.addIntervalJob(job)
   }
 
+  /**
+   * @deprecated in favor of unified addJob method
+   */
   addSimpleIntervalJob(job: SimpleIntervalJob): void {
     return this.addIntervalJob(job)
   }
@@ -54,6 +63,9 @@ export class ToadScheduler {
     }
   }
 
+  /**
+   * @deprecated in favor of unified addJob method
+   */
   addCronJob(job: CronJob): void {
     if (!this.engines.cronJobEngine) {
       this.engines.cronJobEngine = new CronJobEngine()
@@ -61,6 +73,16 @@ export class ToadScheduler {
 
     this.registerJob(job)
     this.engines.cronJobEngine.add(job)
+  }
+
+  addJob(job: Job): void {
+    if (job instanceof SimpleIntervalJob || job instanceof LongIntervalJob) {
+      this.addIntervalJob(job)
+    } else if (job instanceof CronJob) {
+      this.addCronJob(job)
+    } else {
+      throw new Error('Unsupported job type.')
+    }
   }
 
   stop(): void {
