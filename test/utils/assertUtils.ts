@@ -26,3 +26,13 @@ export function expectToMatchObject(actual: unknown[], expected: any[]) {
     }
   }
 }
+
+export function expectToThrowMessage(fn: () => unknown, expectedMessage: RegExp) {
+  if (isJest) {
+    expect(fn).toThrow(expectedMessage)
+  } else {
+    // Jasmine's `toThrow` compares the thrown value itself, so matching against
+    // the message needs `toThrowError`, which Jest 30 no longer provides
+    ;(expect(fn) as any).toThrowError(expectedMessage)
+  }
+}
