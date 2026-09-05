@@ -4,7 +4,7 @@ import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { AsyncTask } from '../lib/common/AsyncTask'
-import { expectTimerRefState } from './utils/assertUtils'
+import { expectTimerRefState, expectToThrowMessage } from './utils/assertUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -408,7 +408,7 @@ describe('ToadScheduler', () => {
         task,
       )
 
-      expect(() => scheduler.addSimpleIntervalJob(job)).toThrowError(/can be scheduled correctly/)
+      expectToThrowMessage(() => scheduler.addSimpleIntervalJob(job), /can be scheduled correctly/)
       expect(counter).toEqual(0)
       scheduler.stop()
     })
