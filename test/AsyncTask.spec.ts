@@ -1,8 +1,8 @@
+import { beforeAll, describe, expect, it } from 'vitest'
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { AsyncTask } from '../lib/common/AsyncTask'
 import { unMockTimers } from './utils/timerUtils'
-import { expectAssertions } from './utils/assertUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -14,8 +14,8 @@ describe('ToadScheduler', () => {
   })
 
   describe('AsyncTask', () => {
-    it('correctly handles async errors', (done) => {
-      expectAssertions(1)
+    it('correctly handles async errors', async () => {
+      expect.assertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
@@ -39,15 +39,13 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(error).toBe('kaboom')
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(error).toBe('kaboom')
+      scheduler.stop()
     })
 
-    it('correctly handles async errors with Promise.all', (done) => {
-      expectAssertions(3)
+    it('correctly handles async errors with Promise.all', async () => {
+      expect.assertions(3)
       let error: string
       let result1: boolean
       let result3: boolean
@@ -80,17 +78,15 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(error).toBe('kaboom')
-        expect(result1).toBe(true)
-        expect(result3).toBe(true)
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(error).toBe('kaboom')
+      expect(result1).toBe(true)
+      expect(result3).toBe(true)
+      scheduler.stop()
     })
 
-    it('correctly handles errors asynchronously', (done) => {
-      expectAssertions(1)
+    it('correctly handles errors asynchronously', async () => {
+      expect.assertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
@@ -119,15 +115,13 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(error).toBe('kaboom')
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(error).toBe('kaboom')
+      scheduler.stop()
     })
 
-    it('correctly handles async rejections', (done) => {
-      expectAssertions(1)
+    it('correctly handles async rejections', async () => {
+      expect.assertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
@@ -150,21 +144,22 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(error).toBe('kaboom2')
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(error).toBe('kaboom2')
+      scheduler.stop()
     })
 
-    it('correctly provide taskid', (done) => {
-      expectAssertions(1)
+    it('correctly provide taskid', async () => {
+      // The interval may fire more than once before the sleep below resolves,
+      // so capture what the task was handed and assert on it afterwards
+      // instead of counting assertions inside the callback.
+      let observedTaskId: string | undefined
 
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
         'async task',
         (taskId) => {
-          expect(taskId).toBe('async task')
+          observedTaskId = taskId
           return Promise.resolve().then(() => {
             return Promise.reject(new Error('kaboom2'))
           })
@@ -180,22 +175,21 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(7).then(() => {
-        scheduler.stop()
-        done()
-      })
+      await sleep(7)
+      scheduler.stop()
+      expect(observedTaskId).toBe('async task')
     })
 
-    it('correctly provide taskid and jobid', (done) => {
-      expectAssertions(2)
+    it('correctly provide taskid and jobid', async () => {
+      let observedTaskId: string | undefined
+      let observedJobId: string | undefined
 
       const scheduler = new ToadScheduler()
       const task = new AsyncTask(
         'async task',
         (taskId, jobId) => {
-          expect(taskId).toBe('async task')
-          expect(jobId).toBe('jobId')
-          Promise.resolve()
+          observedTaskId = taskId
+          observedJobId = jobId
           return Promise.reject(new Error('kaboom2'))
         },
         () => {},
@@ -212,10 +206,10 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      scheduler.stop()
+      expect(observedTaskId).toBe('async task')
+      expect(observedJobId).toBe('jobId')
     })
   })
 })
