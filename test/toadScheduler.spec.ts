@@ -1,10 +1,11 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
 import { NoopTask } from './utils/testTasks'
 import { advanceTimersByTime, mockTimers, unMockTimers } from './utils/timerUtils'
 import { JobStatus } from '../lib/common/Job'
-import { expectTimerRefState, expectToMatchObject, expectToThrowMessage } from './utils/assertUtils'
+import { expectTimerRefState } from './utils/assertUtils'
 
 describe('ToadScheduler', () => {
   beforeEach(() => {
@@ -99,9 +100,9 @@ describe('ToadScheduler', () => {
 
       const deletedJob = scheduler.removeById('job2')
       expect(deletedJob?.id).toMatch('job2')
-      expectToThrowMessage(() => {
+      expect(() => {
         scheduler.getById('job2')
-      }, /not registered/)
+      }).toThrow(/not registered/)
       const nonExistingJob = scheduler.removeById('job2')
       expect(nonExistingJob).toBeUndefined()
 
@@ -119,9 +120,9 @@ describe('ToadScheduler', () => {
   describe('stopById', () => {
     it('throws an error when non-existent id is stopped', () => {
       const scheduler = new ToadScheduler()
-      expectToThrowMessage(() => {
+      expect(() => {
         scheduler.stopById('dummy')
-      }, /Job with an id dummy is not registered./)
+      }).toThrow(/Job with an id dummy is not registered./)
     })
 
     it('correctly stops job by id', () => {
@@ -171,9 +172,9 @@ describe('ToadScheduler', () => {
   describe('startById', () => {
     it('throws an error when non-existent id is started', () => {
       const scheduler = new ToadScheduler()
-      expectToThrowMessage(() => {
+      expect(() => {
         scheduler.startById('dummy')
-      }, /Job with an id dummy is not registered./)
+      }).toThrow(/Job with an id dummy is not registered./)
     })
 
     it('correctly starts job by id', () => {
@@ -244,7 +245,7 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobs()
-      expectToMatchObject(retrievedJobs, [
+      expect(retrievedJobs).toMatchObject([
         {
           id: 'id',
         },
@@ -278,7 +279,7 @@ describe('ToadScheduler', () => {
       job.stop()
 
       const retrievedJobs = scheduler.getAllJobsByStatus(JobStatus.STOPPED)
-      expectToMatchObject(retrievedJobs, [
+      expect(retrievedJobs).toMatchObject([
         {
           id: 'id',
         },
@@ -305,9 +306,9 @@ describe('ToadScheduler', () => {
       )
 
       scheduler.addSimpleIntervalJob(job)
-      expectToThrowMessage(() => {
+      expect(() => {
         scheduler.addSimpleIntervalJob(job2)
-      }, /Job with an id job1 is already registered/)
+      }).toThrow(/Job with an id job1 is already registered/)
     })
 
     it('correctly stops without any jobs', () => {

@@ -1,9 +1,10 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { Task } from '../lib/common/Task'
 import { AsyncTask } from '../lib/common/AsyncTask'
 import { unMockTimers } from './utils/timerUtils'
-import { expectAssertions } from './utils/assertUtils'
+import { onUnhandledRejection } from './utils/rejectionUtils'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -11,21 +12,24 @@ function sleep(ms: number) {
 
 describe('Rejection handling', () => {
   let rejectionCount: number
+  let disposeRejectionListener: () => void
+
   beforeEach(() => {
     rejectionCount = 0
-    process.on('unhandledRejection', () => {
+    disposeRejectionListener = onUnhandledRejection(() => {
       rejectionCount++
     })
   })
 
   afterEach(() => {
+    disposeRejectionListener()
     unMockTimers()
   })
 
   describe('Task', () => {
-    it('default error handler does not leak unhandled rejections', (done) => {
+    it('default error handler does not leak unhandled rejections', async () => {
       unMockTimers()
-      expectAssertions(2)
+      expect.assertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new Task('task', () => {
@@ -41,19 +45,17 @@ describe('Rejection handling', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(thrownError).toBe(true)
-        expect(rejectionCount).toBe(0)
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(thrownError).toBe(true)
+      expect(rejectionCount).toBe(0)
+      scheduler.stop()
     })
   })
 
   describe('AsyncTask', () => {
-    it('default error handler does not leak unhandled rejections on errors', (done) => {
+    it('default error handler does not leak unhandled rejections on errors', async () => {
       unMockTimers()
-      expectAssertions(2)
+      expect.assertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('async task', () => {
@@ -71,17 +73,15 @@ describe('Rejection handling', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(thrownError).toBe(true)
-        expect(rejectionCount).toBe(0)
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(thrownError).toBe(true)
+      expect(rejectionCount).toBe(0)
+      scheduler.stop()
     })
 
-    it('default error handler does not leak unhandled rejections on rejected promises', (done) => {
+    it('default error handler does not leak unhandled rejections on rejected promises', async () => {
       unMockTimers()
-      expectAssertions(2)
+      expect.assertions(2)
       let thrownError: boolean
       const scheduler = new ToadScheduler()
       const task = new AsyncTask('async task', () => {
@@ -99,12 +99,10 @@ describe('Rejection handling', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(10).then(() => {
-        expect(thrownError).toBe(true)
-        expect(rejectionCount).toBe(0)
-        scheduler.stop()
-        done()
-      })
+      await sleep(10)
+      expect(thrownError).toBe(true)
+      expect(rejectionCount).toBe(0)
+      scheduler.stop()
     })
   })
 })

@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'vitest'
 import { ToadScheduler } from '../lib/toadScheduler'
 import { SimpleIntervalJob } from '../lib/engines/simple-interval/SimpleIntervalJob'
 import { isSyncTask, Task } from '../lib/common/Task'
 import { unMockTimers } from './utils/timerUtils'
-import { expectAssertions } from './utils/assertUtils'
 import { AsyncTask } from '../lib/common/AsyncTask'
 
 function sleep(ms: number) {
@@ -16,9 +16,9 @@ describe('ToadScheduler', () => {
       expect(isSyncTask(new AsyncTask('id', () => Promise.resolve()))).toBe(false)
     })
 
-    it('correctly handles errors', (done) => {
+    it('correctly handles errors', async () => {
       unMockTimers()
-      expectAssertions(1)
+      expect.assertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new Task(
@@ -40,16 +40,14 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(5).then(() => {
-        expect(error).toBe('kaboomSync')
-        scheduler.stop()
-        done()
-      })
+      await sleep(5)
+      expect(error).toBe('kaboomSync')
+      scheduler.stop()
     })
 
-    it('correctly handles errors with async error handler', (done) => {
+    it('correctly handles errors with async error handler', async () => {
       unMockTimers()
-      expectAssertions(1)
+      expect.assertions(1)
       let error: string
       const scheduler = new ToadScheduler()
       const task = new Task(
@@ -78,16 +76,14 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(5).then(() => {
-        expect(error).toBe('kaboomSync')
-        scheduler.stop()
-        done()
-      })
+      await sleep(5)
+      expect(error).toBe('kaboomSync')
+      scheduler.stop()
     })
 
-    it('correctly provide taskid', (done) => {
+    it('correctly provide taskid', async () => {
       unMockTimers()
-      expectAssertions(1)
+      expect.assertions(1)
 
       const scheduler = new ToadScheduler()
       const task = new Task(
@@ -115,10 +111,8 @@ describe('ToadScheduler', () => {
 
       scheduler.addSimpleIntervalJob(job)
 
-      sleep(5).then(() => {
-        scheduler.stop()
-        done()
-      })
+      await sleep(5)
+      scheduler.stop()
     })
   })
 })

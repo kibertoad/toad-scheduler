@@ -1,6 +1,4 @@
-# @parcel/watcher (jest-haste-map) and unrs-resolver (jest-resolve) ship
-# prebuilt platform binaries as separate optional packages, so their native
-# build scripts do not need to run.
+# Playwright's postinstall downloads browsers; CI installs them explicitly with
+# `playwright install --with-deps chromium` so the build script stays disabled.
 allowBuilds:
-  '@parcel/watcher': false
-  unrs-resolver: false
+  playwright: false

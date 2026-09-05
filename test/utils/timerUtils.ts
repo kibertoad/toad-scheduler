@@ -1,18 +1,10 @@
-const isJest = process.env.JEST_WORKER_ID !== undefined
-const isJasmine = !isJest
+import { vi } from 'vitest'
 
+// Vitest uses @sinonjs/fake-timers in both the node and browser projects, so
+// these wrappers no longer need to branch per runner. They stay as a single
+// place to tweak fake timer setup for a library that is all about timers.
 export function mockTimers() {
-  if (isJest) {
-    jest.useFakeTimers()
-  }
-  if (isJasmine) {
-    jasmine.clock().install()
-    // jest.useFakeTimers() mocks Date by default; jasmine.clock().install()
-    // only mocks setTimeout/setInterval. Without mockDate(), Date.now() stays
-    // on the real wall clock and time-eating logic in LongIntervalJob loops
-    // forever because (mainTaskExecutionTime - Date.now()) never decreases.
-    jasmine.clock().mockDate(new Date())
-  }
+  vi.useFakeTimers()
 }
 
 export type TimeParam = {
@@ -22,30 +14,13 @@ export type TimeParam = {
 }
 
 export function setSystemTime(time: TimeParam) {
-  const date = new Date(2020, 3, 1, time.hours, time.minutes, time.seconds)
-
-  if (isJest) {
-    jest.setSystemTime(date)
-  }
-  if (isJasmine) {
-    jasmine.clock().mockDate(date)
-  }
+  vi.setSystemTime(new Date(2020, 3, 1, time.hours, time.minutes, time.seconds))
 }
 
 export function unMockTimers() {
-  if (isJest) {
-    jest.useRealTimers()
-  }
-  if (isJasmine) {
-    jasmine.clock().uninstall()
-  }
+  vi.useRealTimers()
 }
 
 export function advanceTimersByTime(time: number) {
-  if (isJest) {
-    jest.advanceTimersByTime(time)
-  }
-  if (isJasmine) {
-    jasmine.clock().tick(time)
-  }
+  vi.advanceTimersByTime(time)
 }

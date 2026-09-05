@@ -1,10 +1,7 @@
-import { isJest } from './utils/assertUtils'
+import { describe, expect, it } from 'vitest'
 
 describe('import', () => {
   it('JobStatus', async () => {
-    if (!isJest) {
-      return
-    }
     const { JobStatus, SimpleIntervalJob, Task, ToadScheduler } = await import('../index')
 
     const scheduler = new ToadScheduler()
