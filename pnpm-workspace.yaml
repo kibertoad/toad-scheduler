@@ -1,0 +1,6 @@
+# @parcel/watcher (jest-haste-map) and unrs-resolver (jest-resolve) ship
+# prebuilt platform binaries as separate optional packages, so their native
+# build scripts do not need to run.
+allowBuilds:
+  '@parcel/watcher': false
+  unrs-resolver: false
