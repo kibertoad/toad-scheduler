@@ -44,7 +44,7 @@ importers:
         version: 5.5.4(karma@6.4.4)(typescript@5.2.2)
       prettier:
         specifier: ^3.9.6
-        version: 3.9.6
+        version: 3.9.7
       ts-jest:
         specifier: ^29.4.12
         version: 29.4.12(@babel/core@7.29.0)(@jest/transform@30.5.1)(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.0))(jest-util@30.5.1)(jest@30.5.1(@types/node@25.9.5))(typescript@5.2.2)
@@ -2149,8 +2149,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.9.6:
-    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
+  prettier@3.9.7:
+    resolution: {integrity: sha512-T3mF5P7HFzZVLDQuCUNtJj6WK1pcpLMweMNUVwGb01bLNkH9AkKxtZvmInw8K6bnn2O3d6/5RHl6zSHiBAD0Og==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -2211,8 +2211,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-is@19.2.8:
-    resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
+  react-is@19.3.0:
+    resolution: {integrity: sha512-UpMYezM4v5/18F28aC66AEsjXIgE02kyEMH6yLdgLXu/UTfa1Ntwck/nNLrbqJsEXW7gPb0coNO9FQse9WTovA==}
 
   readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -5238,12 +5238,12 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.9.6: {}
+  prettier@3.9.7: {}
 
   pretty-format@30.5.1:
     dependencies:
       '@jest/react-is-18': react-is@18.3.1
-      '@jest/react-is-19': react-is@19.2.8
+      '@jest/react-is-19': react-is@19.3.0
       '@jest/schemas': 30.5.0
       ansi-styles: 5.2.0
 
@@ -5298,7 +5298,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-is@19.2.8: {}
+  react-is@19.3.0: {}
 
   readable-stream@2.3.8:
     dependencies:
