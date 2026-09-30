@@ -44,7 +44,7 @@ importers:
         version: 5.5.4(karma@6.4.4)(typescript@5.2.2)
       prettier:
         specifier: ^3.9.6
-        version: 3.9.7
+        version: 3.9.9
       ts-jest:
         specifier: ^29.4.12
         version: 29.4.12(@babel/core@7.29.0)(@jest/transform@30.5.1)(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.0))(jest-util@30.5.1)(jest@30.5.1(@types/node@25.9.5))(typescript@5.2.2)
@@ -2149,8 +2149,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.9.7:
-    resolution: {integrity: sha512-T3mF5P7HFzZVLDQuCUNtJj6WK1pcpLMweMNUVwGb01bLNkH9AkKxtZvmInw8K6bnn2O3d6/5RHl6zSHiBAD0Og==}
+  prettier@3.9.9:
+    resolution: {integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -5238,7 +5238,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.9.7: {}
+  prettier@3.9.9: {}
 
   pretty-format@30.5.1:
     dependencies:
