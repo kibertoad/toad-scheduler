@@ -21,7 +21,7 @@ export class ToadScheduler {
 
   constructor(options: ToadSchedulerOptions = {}) {
     this.engines = {}
-    this.jobRegistry = {}
+    this.jobRegistry = Object.create(null)
     this.options = options
   }
 
