@@ -23,7 +23,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "croner": "^10.0.1"
+    "croner": "^11.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
