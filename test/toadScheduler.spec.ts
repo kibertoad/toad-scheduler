@@ -15,6 +15,56 @@ describe('ToadScheduler', () => {
     unMockTimers()
   })
 
+  describe('job IDs matching object properties', () => {
+    for (const id of ['constructor', '__proto__', 'toString', 'hasOwnProperty']) {
+      it(`registers and manages ${id}`, () => {
+        const scheduler = new ToadScheduler()
+        let counter = 0
+        const task = new Task('count', () => {
+          counter++
+        })
+        const job = new SimpleIntervalJob({ milliseconds: 10 }, task, { id })
+
+        scheduler.addSimpleIntervalJob(job)
+        expect(scheduler.existsById(id)).toBe(true)
+        expect(scheduler.getById(id)).toBe(job)
+        expect(scheduler.getAllJobs()).toEqual([job])
+        advanceTimersByTime(10)
+        expect(counter).toBe(1)
+
+        scheduler.stopById(id)
+        expect(scheduler.getAllJobsByStatus(JobStatus.STOPPED)).toEqual([job])
+        advanceTimersByTime(10)
+        expect(counter).toBe(1)
+        scheduler.startById(id)
+        advanceTimersByTime(10)
+        expect(counter).toBe(2)
+
+        const duplicate = new SimpleIntervalJob({ milliseconds: 10 }, task, { id })
+        expectToThrowMessage(() => scheduler.addSimpleIntervalJob(duplicate), /already registered/)
+        expect(scheduler.getAllJobs()).toEqual([job])
+
+        expect(scheduler.removeById(id)).toBe(job)
+        expect(scheduler.existsById(id)).toBe(false)
+        expect(scheduler.getAllJobs()).toEqual([])
+        expect(scheduler.removeById(id)).toBeUndefined()
+        advanceTimersByTime(10)
+        expect(counter).toBe(2)
+        scheduler.stop()
+      })
+
+      it(`does not find an unregistered ${id}`, () => {
+        const scheduler = new ToadScheduler()
+        expect(scheduler.existsById(id)).toBe(false)
+        expectToThrowMessage(() => scheduler.getById(id), /not registered/)
+        expect(scheduler.removeById(id)).toBeUndefined()
+        expectToThrowMessage(() => scheduler.stopById(id), /not registered/)
+        expectToThrowMessage(() => scheduler.startById(id), /not registered/)
+        expect(scheduler.getAllJobs()).toEqual([])
+      })
+    }
+  })
+
   describe('getById', () => {
     it('returns job correctly', () => {
       const scheduler = new ToadScheduler()
